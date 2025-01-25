@@ -186,7 +186,8 @@ class Logging:
         if context_marker is not None:
             self.current_context_marker = context_marker
 
-        if self.current_context_marker is not None:
+        if context_marker is not None:
+            self.current_context_marker = context_marker
             msg = f"[{self.current_context_marker}] {msg}"
 
         if identifiers:
@@ -261,7 +262,9 @@ class Logging:
         Returns:
             str | None: The final message if logged, None if suppressed by verbosity.
         """
-        if self.verbosity_exceeded(verbose, verbosity):
+        if self.verbosity_exceeded(verbose, verbosity) and not (
+            self.current_context_marker and self.current_context_marker in self.verbosity_bypass_markers
+        ):
             return None
 
         final_msg = self._prepare_message(msg, context_marker, identifiers)
