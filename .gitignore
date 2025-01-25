@@ -33,6 +33,7 @@ ENV/
 
 # Testing
 .nox/
+.tox/
 .coverage
 .coverage.*
 coverage.xml
