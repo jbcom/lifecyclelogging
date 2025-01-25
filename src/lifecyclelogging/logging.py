@@ -139,6 +139,7 @@ class Logging:
 
         if self.enable_file or strtobool(os.getenv("OVERRIDE_TO_FILE", "False")):
             add_file_handler(logger, log_file_name)
+            add_file_handler(logger, log_file_name)
 
     def verbosity_exceeded(self, verbose: bool, verbosity: int) -> bool:
         """Determines if a message should be suppressed based on verbosity settings.
