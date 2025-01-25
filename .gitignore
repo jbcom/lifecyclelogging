@@ -48,3 +48,4 @@ docs/_build/
 docs/doctrees/
 docs/apidocs/
 *.doctree
+.aider*
