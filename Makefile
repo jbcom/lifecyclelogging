@@ -12,40 +12,40 @@ all: clean check test docs build  ## Run all checks and tests
 ##@ Development
 env:  ## Create the development environment (with all extras)
 	pip install -e '.[dev,test,docs]'
-	pip install nox
+	pip install tox tox-gh-actions
 
 clean: ## Clean up build artifacts and caches
-	nox -s clean
+	tox -e clean
 
 ##@ Testing
 test: ## Run tests
-	nox -s tests
+	tox
 
 test-coverage: ## Run tests with coverage report
-	nox -s tests report
+	tox -e coverage_report
 
 ##@ Code Quality
 lint: ## Run linting
-	nox -s lint
+	tox -e lint
 
 format: ## Format code and sort imports
-	nox -s format_code
+	tox -e format
 
 type: ## Run type checking
-	nox -s type_check
+	tox -e type_check
 
 check: lint type ## Run all code quality checks
 
 ##@ Documentation
 docs: ## Build documentation
 	mkdir -p docs/_build
-	nox -s docs
+	tox -e docs
 
 docs-serve: ## Serve documentation locally
 	python -m http.server --directory docs/_build/html
 
 docs-clean: ## Clean documentation build
-	nox -s clean
+	tox -e clean
 
 ##@ Building
 build: clean ## Build the package
