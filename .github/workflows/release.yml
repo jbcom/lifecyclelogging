@@ -24,7 +24,7 @@ jobs:
         uses: hynek/build-and-inspect-python-package@v2
 
   test:
-    name: Test Package
+    name: Test Package with Tox
     needs: initial_build_and_inspect
     runs-on: ubuntu-latest
     strategy:
@@ -45,12 +45,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          pip install nox
+        run: pip install tox
 
-      - name: Run tests with nox
+      - name: Run Tests with Tox
         run: |
-          nox -s tests-${{ matrix.python-version }}
+          tar xf dist/*.tar.gz --strip-components=1
+          tox run -e py${{ matrix.python-version }}
 
   release:
     name: Semantic Release and Signed Build
