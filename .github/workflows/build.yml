@@ -1,45 +1,94 @@
-name: Continuous Delivery
+name: Build and Release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  release:
+  build:
+    name: Build & validate package
     runs-on: ubuntu-latest
-    concurrency: release
-
-    permissions:
-      id-token: write
-      contents: write
+    outputs:
+      version: ${{ steps.inspect.outputs.package_version }}
+      artifact_name: Packages
+      supported_pythons: ${{ steps.inspect.outputs.supported_python_classifiers_json_array }}
 
     steps:
-      - name: Setup | Checkout Repository at workflow sha
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.sha }}
 
-      - name: Setup | Force correct release branch on workflow sha
+      - name: Build & inspect package
+        id: inspect
+        uses: hynek/build-and-inspect-python-package@v2
+
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(needs.build.outputs.supported_pythons) }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
         run: |
-          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
+          pip install nox
 
-      - name: Action | Semantic Version Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@v9.16.1
+      - name: Run tests with nox
+        run: |
+          nox -s tests-${{ matrix.python-version }}
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          git_committer_name: "github-actions"
-          git_committer_email: "actions@users.noreply.github.com"
+          name: coverage-py${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 14
+          if-no-files-found: error
 
-      - name: Publish | Upload package to PyPI
-        uses: pypa/gh-action-pypi-publish@v1
-        if: steps.release.outputs.released == 'true'
+  release:
+    name: Create GitHub Release
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Publish | Upload to GitHub Release Assets
-        uses: python-semantic-release/publish-action@v9.16.1
-        if: steps.release.outputs.released == 'true'
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.release.outputs.tag }}
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: "Automated release from GitHub Actions"
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/*
+          asset_name: my-package-${{ github.run_number }}.tar.gz
+          asset_content_type: application/gzip
