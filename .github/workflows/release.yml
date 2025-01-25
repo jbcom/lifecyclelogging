@@ -19,6 +19,11 @@ jobs:
           ref: ${{ github.sha }}
           token: ${{ secrets.RELEASE_TOKEN }}
 
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
       - name: Python Semantic Release
         id: semrel
         uses: python-semantic-release/python-semantic-release@v9.16.1
