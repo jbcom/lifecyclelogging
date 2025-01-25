@@ -6,22 +6,16 @@ import logging
 import os
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
+from pathlib import Path
 from typing import Any, cast
 
-from extended_data_types import (
-    get_unique_signature,
-    strtobool,
-)
+from extended_data_types import get_unique_signature, strtobool
 
 from .const import VERBOSITY
 from .handlers import add_console_handler, add_file_handler
 from .types import LogLevel
-from .utils import (
-    clear_existing_handlers,
-    find_logger,
-    get_log_level,
-    add_json_data,
-)
+from .utils import (add_json_data, clear_existing_handlers, find_logger,
+                    get_log_level)
 
 
 class Logging:
@@ -113,7 +107,7 @@ class Logging:
         """Configure the logger instance."""
         logger_name = logger_name or get_unique_signature(self)
         log_file_name = (
-                log_file_name or os.getenv("LOG_FILE_NAME") or f"{logger_name}.log"
+            log_file_name or os.getenv("LOG_FILE_NAME") or f"{logger_name}.log"
         )
         logger = logger or logging.getLogger(logger_name)
         logger.propagate = False
@@ -138,7 +132,7 @@ class Logging:
             add_console_handler(logger)
 
         if self.enable_file or strtobool(os.getenv("OVERRIDE_TO_FILE", "False")):
-            add_file_handler(logger, log_file_name)
+            # Pass the log file name directly
             add_file_handler(logger, log_file_name)
 
     def verbosity_exceeded(self, verbose: bool, verbosity: int) -> bool:

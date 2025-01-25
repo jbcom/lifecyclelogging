@@ -4,23 +4,31 @@ from __future__ import annotations
 
 import logging
 import re
+from pathlib import Path
 
 from rich.logging import RichHandler
 
 
 def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
-    """Adds a file handler to the logger, sanitizing the file name."""
+    """Add a file handler to the logger, ensuring the file name is valid."""
+    # Sanitize the file name
     sanitized_name = re.sub(r"[^0-9a-zA-Z]+", "_", log_file_name.rstrip(".log"))
     if not sanitized_name[:1].isalnum():
         first_alpha = re.search(r"[A-Za-z0-9]", sanitized_name)
         if not first_alpha:
             raise RuntimeError(
-                f"Malformed log file name: {sanitized_name} must contain at least one ASCII character",
+                f"Malformed log file name: {log_file_name} must contain at least one ASCII character",
             )
         sanitized_name = sanitized_name[first_alpha.start():]
 
-    log_file = f"{sanitized_name}.log"
-    file_handler = logging.FileHandler(log_file)
+    # Use the provided path directly
+    log_file_path = Path(log_file_name).resolve()
+    
+    # Ensure the directory exists
+    log_file_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Add the file handler
+    file_handler = logging.FileHandler(log_file_path)
     file_formatter = logging.Formatter(
         "[%(created)d] [%(threadName)s] [%(levelname)-8s] %(message)s",
     )
