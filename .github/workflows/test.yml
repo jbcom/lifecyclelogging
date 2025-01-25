@@ -1,0 +1,88 @@
+name: Test & Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & validate package
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.inspect.outputs.package_version }}
+      artifact_name: Packages
+      supported_pythons: ${{ steps.inspect.outputs.supported_python_classifiers_json_array }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build & inspect package
+        id: inspect
+        uses: hynek/build-and-inspect-python-package@v2
+
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(needs.build.outputs.supported_pythons) }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install nox
+
+      - name: Run tests with nox
+        run: |
+          nox -s tests-${{ matrix.python-version }}
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-py${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 14
+          if-no-files-found: error
+
+  quality:
+    name: Code Quality
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install nox
+        run: |
+          pip install nox
+
+      - name: Run type checks
+        run: |
+          nox -s type
+
+      - name: Run linting
+        run: |
+          nox -s lint
