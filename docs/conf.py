@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import os
 
 # Project information
 project = "lifecyclelogging"
-copyright = "2024, Jon Bogaty"
+project_copyright = "2024, Jon Bogaty"
 author = "Jon Bogaty"
 
 # The full version, including alpha/beta/rc tags

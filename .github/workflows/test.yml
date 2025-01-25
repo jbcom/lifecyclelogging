@@ -1,10 +1,11 @@
 name: Test & Quality
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,8 +30,8 @@ jobs:
         id: inspect
         uses: hynek/build-and-inspect-python-package@v2
 
-  test:
-    name: Test Python ${{ matrix.python-version }}
+  full_tests:
+    name: Full Tests
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -53,7 +54,7 @@ jobs:
         run: |
           pip install nox
 
-      - name: Run tests with nox
+      - name: Run full tests with nox
         run: |
           nox -s tests-${{ matrix.python-version }}
 
@@ -61,14 +62,37 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-py${{ matrix.python-version }}
-          path: |
-            coverage.xml
-            htmlcov/
-          retention-days: 14
+          path: coverage.xml
           if-no-files-found: error
 
-  quality:
-    name: Code Quality
+  lint:
+    name: Linting
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install nox
+        run: |
+          pip install nox
+
+      - name: Run linting
+        run: |
+          nox -s lint
+
+  type_check:
+    name: Type Checking
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -93,6 +117,21 @@ jobs:
         run: |
           nox -s type_check
 
-      - name: Run linting
+  coverage:
+    name: Coverage Report
+    needs: [full_tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-py
+          path: coverage-reports
+
+      - name: Combine coverage reports
         run: |
-          nox -s lint
+          pip install coverage
+          coverage combine coverage-reports
+          coverage report
+          coverage html
+          coverage xml
