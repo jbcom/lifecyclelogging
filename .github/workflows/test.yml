@@ -91,7 +91,7 @@ jobs:
 
       - name: Run type checks
         run: |
-          nox -s type
+          nox -s type_check
 
       - name: Run linting
         run: |
