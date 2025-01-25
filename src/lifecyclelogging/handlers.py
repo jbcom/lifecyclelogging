@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+
 from pathlib import Path
 
 from rich.logging import RichHandler
@@ -21,9 +22,10 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
     if not sanitized_name[:1].isalnum():
         first_alpha = re.search(r"[A-Za-z0-9]", sanitized_name)
         if not first_alpha:
-            raise RuntimeError(
-                f"Malformed log file name: {log_file_name} must contain at least one ASCII character",
+            error_message = (
+                f"Malformed log file name: {log_file_name} must contain at least one ASCII character"
             )
+            raise RuntimeError(error_message)
         sanitized_name = sanitized_name[first_alpha.start() :]
 
     # Use the provided path directly

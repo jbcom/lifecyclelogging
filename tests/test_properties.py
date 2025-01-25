@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 
 from lifecyclelogging import Logging
 
+
 # Strategy for valid log levels
 valid_log_levels = st.sampled_from(["debug", "info", "warning", "error", "critical"])  # type: ignore[arg-type]
 
@@ -83,7 +84,7 @@ def test_storage_marker_properties(message: str, marker: str) -> None:
     """
     logger = Logging(enable_console=False, enable_file=False)
 
-    result = logger.logged_statement(
+    logger.logged_statement(
         message,
         storage_marker=marker,
         log_level="info",  # type: ignore[arg-type]

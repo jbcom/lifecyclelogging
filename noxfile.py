@@ -1,12 +1,16 @@
+"""Nox configuration for lifecyclelogging project."""
+
 from __future__ import annotations
 
 import shutil
+
 from pathlib import Path
 
 import nox
 
+
 # Configure nox
-nox.options.sessions = ["tests", "lint", "type", "docs"]
+nox.options.sessions = ["tests", "lint", "format", "type_check", "docs"]
 nox.options.reuse_existing_virtualenvs = True
 
 # Get Python versions from pyproject.toml classifiers
@@ -32,14 +36,21 @@ def tests(session: nox.Session) -> None:
 
 @nox.session(python="3.12", venv_backend="uv")
 def lint(session: nox.Session) -> None:
-    """Run linting."""
+    """Run linting to check code quality."""
     session.install("--reinstall-package", "lifecyclelogging", "-e", ".[dev]")
-    session.run("ruff", "format", ".")
+    # Check for linting issues
     session.run("ruff", "check", ".")
 
 
 @nox.session(python="3.12", venv_backend="uv")
-def type(session: nox.Session) -> None:
+def format_code(session: nox.Session) -> None:
+    """Format code and sort imports."""
+    session.install("--reinstall-package", "lifecyclelogging", "-e", ".[dev]")
+    session.run("ruff", "check", "--fix", ".")
+
+
+@nox.session(python="3.12", venv_backend="uv")
+def type_check(session: nox.Session) -> None:
     """Run type checking."""
     session.install("--reinstall-package", "lifecyclelogging", "-e", ".[dev]")
     session.run("mypy", "src/lifecyclelogging")

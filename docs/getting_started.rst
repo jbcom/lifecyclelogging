@@ -1,95 +1,83 @@
-================================
+===============
 Getting Started
-================================
+===============
 
+============
 Installation
-------------
-
-You can install LifecycleLogging using pip:
+============
 
 .. code-block:: bash
 
    pip install lifecyclelogging
 
+===========
 Quick Start
------------
+===========
 
+===========
 Basic Usage
-~~~~~~~~~~~
-
-Here's a simple example of using LifecycleLogging:
+===========
 
 .. code-block:: python
 
    from lifecyclelogging import Logging
 
-   # Initialize logger with console output
-   logger = Logging(to_console=True)
-
-   # Log messages at different levels
-   logger.logged_statement("Starting application", log_level="info")
-   logger.logged_statement("Processing data", log_level="debug")
-   logger.logged_statement("Warning: high memory usage", log_level="warning")
-
-File Logging
-~~~~~~~~~~~~
-
-To log to a file instead of (or in addition to) the console:
-
-.. code-block:: python
-
-   # Initialize logger with file output
+   # Initialize logger
    logger = Logging(
-       to_file=True,
-       log_file_name="app.log"
+       enable_console=True,  # Enable console output
+       enable_file=True,     # Enable file output
+       logger_name="my_app"
    )
 
-   # Messages will be written to app.log
-   logger.logged_statement("This goes to the log file", log_level="info")
+   # Basic logging
+   logger.logged_statement("Basic message", log_level="info")
 
-JSON Data Logging
-~~~~~~~~~~~~~~~~~
-
-LifecycleLogging can handle structured data:
-
-.. code-block:: python
-
-   data = {
-       "user_id": 123,
-       "action": "login",
-       "timestamp": "2025-01-25T10:00:00Z"
-   }
-
+   # With context marker
    logger.logged_statement(
-       "User login",
-       json_data=data,
+       "Message with context",
+       context_marker="STARTUP",
        log_level="info"
    )
 
-Log Markers
-~~~~~~~~~~~
+   # With JSON data
+   logger.logged_statement(
+       "Message with data",
+       json_data={"key": "value"},
+       log_level="debug"
+   )
 
-You can group related log messages using markers:
+===============
+Storage Markers
+===============
+
+Store and retrieve related messages:
 
 .. code-block:: python
 
-   logger = Logging(log_marker="user_activity")
-
+   # Store messages under a marker
    logger.logged_statement(
-       "User profile updated",
+       "Important event",
+       storage_marker="EVENTS",
        log_level="info"
    )
 
-   # Access logs by marker
-   user_logs = logger.logs["user_activity"]
+   # Access stored messages
+   events = logger.stored_messages["EVENTS"]
 
+=================
 Verbosity Control
-~~~~~~~~~~~~~~~~~
+=================
 
-Control log output verbosity:
+Control output detail level:
 
 .. code-block:: python
 
+   logger = Logging(
+       enable_verbose_output=True,
+       verbosity_threshold=2
+   )
+
+   # Only logged if verbosity threshold allows
    logger.logged_statement(
        "Detailed debug info",
        verbose=True,
@@ -97,23 +85,20 @@ Control log output verbosity:
        log_level="debug"
    )
 
+=================
 Development Setup
------------------
-
-For development:
+=================
 
 .. code-block:: bash
-
-   # Clone the repository
-   git clone https://github.com/user/lifecyclelogging.git
-   cd lifecyclelogging
 
    # Install development dependencies
    pip install -e ".[dev,test,docs]"
 
    # Run tests
-   tox
+   make test
 
-   # Run specific checks
-   tox -e lint  # Run linting
-   tox -e type  # Run type checking
+   # Run linting and type checks
+   make check
+
+   # Build documentation
+   make docs

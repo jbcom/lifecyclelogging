@@ -1,50 +1,37 @@
+"""Sphinx configuration for lifecyclelogging documentation."""
+
 from __future__ import annotations
 
 import os
 
-
-project = "LifecycleLogging"
+# Project information
+project = "lifecyclelogging"
+copyright = "2024, Jon Bogaty"
 author = "Jon Bogaty"
-copyright_notice = f"2025, {author}"
-version = "0.1.0"
 
+# The full version, including alpha/beta/rc tags
+version = "0.1.0"
+release = version
+
+# Extensions
 extensions = [
     "autodoc2",
-    "sphinx.ext.githubpages",
-    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
+    "sphinx_rtd_theme",
 ]
 
+# Autodoc2 settings
 autodoc2_packages = [
     {
         "path": "../src/lifecyclelogging",
+        "auto_mode": True,
     }
 ]
 
-default_role = "any"
+autodoc2_docstring_parser = "google"  # Use Google style docstrings
 
-autodoc_typehints = "description"
-autodoc_typehints_format = "fully-qualified"
+# List of patterns to exclude from document discovery
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-}
-
+# The theme to use for HTML and Help pages
 html_theme = "sphinx_rtd_theme"
-
-html_context = {}
-if os.environ.get("READTHEDOCS", "") == "True":
-    # Special handling when building on Read the Docs
-    html_context["READTHEDOCS"] = True
-else:
-    # If building locally or on GitHub Pages
-    html_context.update(
-        {
-            "display_github": True,
-            "github_user": "user",
-            "github_repo": "lifecyclelogging",
-            "github_version": "main",
-        }
-    )
-
-nitpick_ignore = []
-nitpick_ignore_regex = []

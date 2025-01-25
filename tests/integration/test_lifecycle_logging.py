@@ -20,18 +20,11 @@ def temp_logger(tmp_path: Path) -> Logging:
         Logging: A logger instance configured for file output.
     """
     log_file_path = tmp_path / "test_app.log"
-    logger = Logging(
+    return Logging(
         enable_file=True,
         log_file_name=str(log_file_path),
         logger_name="integration_test",
     )
-
-    # Debugging: Print the logger handlers and file paths to verify configuration
-    for handler in logger.logger.handlers:
-        if hasattr(handler, "baseFilename"):
-            print(f"Handler file path: {handler.baseFilename}")
-
-    return logger
 
 
 def test_full_logging_lifecycle(temp_logger: Logging, tmp_path: Path) -> None:

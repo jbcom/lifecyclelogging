@@ -10,12 +10,8 @@ requires-python = ">=3.8"
 license = { text = "MIT" }
 readme = "README.md"
 keywords = ["logging", "lifecycle", "debug"]
-authors = [
-    { name = "Jon Bogaty", email = "jon@jonbogaty.com" }
-]
-maintainers = [
-    { name = "Jon Bogaty", email = "jon@jonbogaty.com" }
-]
+authors = [{ name = "Jon Bogaty", email = "jon@jonbogaty.com" }]
+maintainers = [{ name = "Jon Bogaty", email = "jon@jonbogaty.com" }]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -48,15 +44,8 @@ test = [
     "hypothesis>=6.0.0",
     "nox>=2024.0",
 ]
-docs = [
-    "sphinx>=7.0",
-    "sphinx-rtd-theme>=1.0",
-    "sphinx-autodoc2>=0.2.0",
-]
-dev = [
-    "ruff>=0.2.0",
-    "mypy>=1.0.0",
-]
+docs = ["sphinx>=7.0", "sphinx-rtd-theme>=1.0", "sphinx-autodoc2>=0.2.0"]
+dev = ["ruff>=0.2.0", "mypy>=1.0.0"]
 
 [tool.hatch.version]
 path = "src/lifecyclelogging/__init__.py"
@@ -78,11 +67,7 @@ source = ["src", ".tox/py*/**/site-packages"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-exclude_lines = [
-    "no cov",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
-]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 
 [tool.ruff]
 target-version = "py38"
@@ -91,39 +76,39 @@ line-length = 88
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "ANN", # Type annotations are handled by mypy
-    "COM", # Command formatting is handled by a formatter
+    "ANN",  # Type annotations are handled by mypy
+    "COM",  # Command formatting is handled by a formatter
     "D205", # One blank line required between summary line and description
     "D415", # First line should end with a period
     "E501", # Line length is handled by a formatter
-    "TD", # TODO comments allowed
-    "FIX", # FIXME comments allowed
-    "ISC", # Implicit string concatenation is handled by a formatter
+    "TD",   # TODO comments allowed
+    "FIX",  # FIXME comments allowed
+    "ISC",  # Implicit string concatenation is handled by a formatter
     "W191", # Indentation is handled by a formatter
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "docs/conf.py" = [
-    "D100", # Missing docstring in public module — not needed for conf.py
+    "D100",   # Missing docstring in public module — not needed for conf.py
     "INP001", # Implicit namespace package is acceptable for docs
-    "PTH100"  # Path handling is fine for Sphinx conf
+    "PTH100", # Path handling is fine for Sphinx conf
 ]
 "src/lifecyclelogging/logging.py" = [
-    "A005", # Module can shadow stdlib — acceptable for logging
-    "SLF001", # Private member access required for stdlib logging
+    "A005",    # Module can shadow stdlib — acceptable for logging
+    "SLF001",  # Private member access required for stdlib logging
     "PLR0913", # Many arguments are acceptable for logging interface
-    "FBT001", # Boolean args are acceptable for configuration
-    "FBT002", # Boolean defaults are acceptable for configuration
-    "C901", # Complex functions are acceptable in logging
+    "FBT001",  # Boolean args are acceptable for configuration
+    "FBT002",  # Boolean defaults are acceptable for configuration
+    "C901",    # Complex functions are acceptable in logging
     "PLW2901", # Loop variable reassignment is intentional
-    "TRY003", # Long error messages are acceptable
-    "EM102"   # f-strings in errors are acceptable
+    "TRY003",  # Long error messages are acceptable
+    "EM102",   # f-strings in errors are acceptable
 ]
 "tests/*.py" = [
     "INP001", # Implicit namespace package is acceptable in tests
-    "TC001", # Type checking imports not needed in tests
-    "TC003", # Type checking imports not needed in tests
-    "S101"    # Assert statements are acceptable in pytest
+    "TC001",  # Type checking imports not needed in tests
+    "TC003",  # Type checking imports not needed in tests
+    "S101",   # Assert statements are acceptable in pytest
 ]
 
 [tool.ruff.lint.pydocstyle]

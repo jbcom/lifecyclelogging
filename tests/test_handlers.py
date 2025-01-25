@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 
 import pytest
 
 from lifecyclelogging.handlers import add_console_handler, add_file_handler
 
 
-def test_add_file_handler(tmp_path: Path) -> None:
+def test_add_file_handler() -> None:
     """Test adding a file handler to a logger.
 
     This test verifies that a file handler is correctly added to a logger

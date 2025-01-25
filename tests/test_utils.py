@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+
 from typing import Any
 
 import pytest
@@ -64,7 +65,7 @@ def test_clear_existing_handlers() -> None:
 
 
 @pytest.mark.parametrize(
-    "input_data,expected",
+    ("input_data", "expected"),
     [
         (123, 123),
         (2**60, str(2**60)),  # Large int becomes string

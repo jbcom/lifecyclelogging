@@ -1,47 +1,89 @@
-================================
+===========
 Usage Guide
-================================
+===========
 
+==============
 Configuration
--------------
+==============
 
+=====================
 Logger Initialization
-~~~~~~~~~~~~~~~~~~~~~
-
-The LifecycleLogging package provides multiple configuration options:
+=====================
 
 .. code-block:: python
 
    from lifecyclelogging import Logging
 
    logger = Logging(
-       to_console=True,        # Enable console output
-       to_file=True,          # Enable file output
-       logger_name="myapp",   # Custom logger name
+       enable_console=True,     # Enable console output
+       enable_file=True,        # Enable file output
+       logger_name="myapp",     # Custom logger name
        log_file_name="app.log", # Custom log file name
-       log_marker="app"       # Default marker for logs
+       default_storage_marker="app",  # Default marker for storing messages
+       enable_verbose_output=True,    # Enable verbose logging
+       verbosity_threshold=2,         # Set verbosity level (1-5)
+       allowed_levels=["info", "warning"],  # Only store these levels
+       denied_levels=["debug"]             # Don't store these levels
    )
 
+===========
 Log Levels
-----------
+===========
 
-Available log levels from lowest to highest priority:
+Available log levels:
 
 .. code-block:: python
 
-   logger.logged_statement("Debug message", log_level="debug")
-   logger.logged_statement("Info message", log_level="info")
+   logger.logged_statement("Debug info", log_level="debug")
+   logger.logged_statement("General info", log_level="info")
    logger.logged_statement("Warning message", log_level="warning")
-   logger.logged_statement("Error message", log_level="error")
-   logger.logged_statement("Critical message", log_level="critical")
+   logger.logged_statement("Error occurred", log_level="error")
+   logger.logged_statement("Critical failure", log_level="critical")
 
-Structured Logging
-------------------
+===============
+Message Storage
+===============
 
+===============
+Context Markers
+===============
+
+Prefix messages with context:
+
+.. code-block:: python
+
+   logger.logged_statement(
+       "Starting process",
+       context_marker="STARTUP",
+       log_level="info"
+   )
+
+   # Output: [STARTUP] Starting process
+
+===============
+Storage Markers
+===============
+
+Store messages for later retrieval:
+
+.. code-block:: python
+
+   logger.logged_statement(
+       "Database connected",
+       storage_marker="DB",
+       log_level="info"
+   )
+
+   # Access stored messages
+   db_messages = logger.stored_messages["DB"]
+
+==========
 JSON Data
-~~~~~~~~~
+==========
 
-Log structured data along with messages:
+==============
+Unlabeled JSON
+==============
 
 .. code-block:: python
 
@@ -49,110 +91,104 @@ Log structured data along with messages:
        "API request",
        json_data={
            "method": "POST",
-           "endpoint": "/api/v1/users",
+           "endpoint": "/users",
            "status": 200
        },
        log_level="info"
    )
 
-Labeled JSON Data
-~~~~~~~~~~~~~~~~~
-
-Log multiple JSON objects with labels:
+============
+Labeled JSON
+============
 
 .. code-block:: python
 
    logger.logged_statement(
-       "Data analysis",
+       "Request/Response",
        labeled_json_data={
-           "input": {"rows": 1000, "columns": 5},
-           "output": {"processed": 950, "errors": 50}
+           "request": {"method": "GET", "url": "/api/v1/users"},
+           "response": {"status": 200, "count": 5}
        },
        log_level="info"
    )
 
-Advanced Features
------------------
+=================
+Verbosity Control
+=================
 
-Log Markers
-~~~~~~~~~~~
-
-Group related logs using markers:
-
-.. code-block:: python
-
-   # Set marker during initialization
-   logger = Logging(log_marker="database")
-
-   # Or set marker for specific statements
-   logger.logged_statement(
-       "Query executed",
-       log_marker="database",
-       log_level="info"
-   )
-
-   # Access logs by marker
-   database_logs = logger.logs["database"]
-
-Verbosity Controls
-~~~~~~~~~~~~~~~~~~
-
-Control output detail level:
+=============
+Basic Control
+=============
 
 .. code-block:: python
 
-   # Basic verbosity
-   logger.logged_statement(
-       "Basic info",
-       verbose=False,
-       log_level="info"
-   )
-
-   # Detailed output
+   # Will be logged only if enable_verbose_output=True
    logger.logged_statement(
        "Detailed info",
+       verbose=True,
+       log_level="debug"
+   )
+
+================
+Verbosity Levels
+================
+
+.. code-block:: python
+
+   # Configure verbosity
+   logger = Logging(
+       enable_verbose_output=True,
+       verbosity_threshold=2  # Accept messages with verbosity <= 2
+   )
+
+   # Will be logged (verbosity <= threshold)
+   logger.logged_statement(
+       "Medium detail",
        verbose=True,
        verbosity=2,
        log_level="debug"
    )
 
-Error Tracking
-~~~~~~~~~~~~~~
+   # Won't be logged (verbosity > threshold)
+   logger.logged_statement(
+       "High detail",
+       verbose=True,
+       verbosity=3,
+       log_level="debug"
+   )
 
-Track and access errors:
+================
+Verbosity Bypass
+================
 
 .. code-block:: python
 
-   # Log an error
+   # Add marker to bypass list
+   logger.verbosity_bypass_markers.append("IMPORTANT")
+
+   # Will be logged regardless of verbosity settings
    logger.logged_statement(
-       "Operation failed",
-       log_level="error"
+       "Critical info",
+       context_marker="IMPORTANT",
+       verbose=True,
+       verbosity=5,
+       log_level="debug"
    )
 
-   # Access error information
-   last_error = logger.last_error
-   last_error_message = logger.last_error_message
-   all_errors = logger.errors
-
+=====================
 Environment Variables
----------------------
+=====================
 
-Configuration via environment variables:
+The following environment variables are supported:
 
-.. code-block:: bash
+- ``LOG_LEVEL``: Set the default log level
+- ``LOG_FILE_NAME``: Set the log file name
+- ``OVERRIDE_TO_CONSOLE``: Force console output (True/False)
+- ``OVERRIDE_TO_FILE``: Force file output (True/False)
 
-   # Set log level
-   export LOG_LEVEL=DEBUG
-
-   # Override console/file output
-   export OVERRIDE_TO_CONSOLE=True
-   export OVERRIDE_TO_FILE=True
-
-   # Set custom log file name
-   export LOG_FILE_NAME=custom.log
-
+==============
 Best Practices
---------------
+==============
 
 1. **Log Level Selection**
    - Use "debug" for detailed troubleshooting

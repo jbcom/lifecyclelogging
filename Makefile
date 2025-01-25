@@ -28,17 +28,21 @@ test-coverage: ## Run tests with coverage report
 lint: ## Run linting
 	nox -s lint
 
+format: ## Format code and sort imports
+	nox -s format_code
+
 type: ## Run type checking
-	nox -s type
+	nox -s type_check
 
 check: lint type ## Run all code quality checks
 
 ##@ Documentation
 docs: ## Build documentation
+	mkdir -p docs/_build
 	nox -s docs
 
 docs-serve: ## Serve documentation locally
-	cd docs && python -m http.server --directory _build/html
+	python -m http.server --directory docs/_build/html
 
 docs-clean: ## Clean documentation build
 	nox -s clean

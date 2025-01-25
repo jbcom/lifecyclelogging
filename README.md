@@ -1,10 +1,8 @@
 # LifecycleLogging
 
-A flexible and extensible logging utility for Python projects, combining the power of `logging` and `rich` to handle file and console outputs seamlessly.
+A comprehensive logging utility for managing application lifecycle logs, combining the power of Python's `logging` with rich output formatting.
 
 ## Installation
-
-Install LifecycleLogging using `pip`:
 
 ```bash
 pip install lifecyclelogging
@@ -12,70 +10,113 @@ pip install lifecyclelogging
 
 ## Features
 
-- Flexible logging configurations for both console and file outputs.
-- Richly formatted logs with tracebacks for easier debugging.
-- Verbosity controls and custom markers for advanced filtering.
-- Integrates with existing Python logging systems.
+- Configurable console and file logging outputs
+- Rich formatting for enhanced readability
+- Message storage with context and storage markers
+- Verbosity controls with bypass markers
+- JSON data attachment support
+- Type-safe implementation
+- Seamless integration with existing logging systems
+- Automatic Gunicorn logger integration
 
-## Usage
-
-### Basic Logging Setup
-
-```python
-from lifecyclelogging.logging import Logging
-
-# Create a logger instance
-logger = Logging(to_console=True, log_file_name="example_log")
-
-# Log a statement
-logger.logged_statement("This is an informational log.", log_level="info")
-```
-
-### Advanced Configuration
-
-LifecycleLogging allows flexible configuration, including verbosity, custom markers, and more:
+## Basic Usage
 
 ```python
+from lifecyclelogging import Logging
+
+# Initialize logger
+logger = Logging(
+    enable_console=True,  # Enable console output
+    enable_file=True,     # Enable file output
+    logger_name="my_app"
+)
+
+# Basic logging
+logger.logged_statement("Basic message", log_level="info")
+
+# With context marker
 logger.logged_statement(
-    msg="This is a debug message.",
-    verbosity=2,
-    log_level="debug",
-    active_marker="MY_MARKER"
+    "Message with context",
+    context_marker="STARTUP",
+    log_level="info"
+)
+
+# With JSON data
+logger.logged_statement(
+    "Message with data",
+    json_data={"key": "value"},
+    log_level="debug"
 )
 ```
 
-### Integration with Gunicorn
+## Advanced Features
 
-LifecycleLogging detects and inherits Gunicorn log handlers automatically, ensuring seamless integration with web applications.
+### Verbosity Control
+
+```python
+logger = Logging(
+    enable_verbose_output=True,
+    verbosity_threshold=2
+)
+
+# Only logged if verbosity threshold allows
+logger.logged_statement(
+    "Detailed debug info",
+    verbose=True,
+    verbosity=2,
+    log_level="debug"
+)
+```
+
+### Message Storage
+
+```python
+# Store message under a marker
+logger.logged_statement(
+    "Important event",
+    storage_marker="EVENTS",
+    log_level="info"
+)
+
+# Access stored messages
+events = logger.stored_messages["EVENTS"]
+```
+
+### Gunicorn Integration
+
+When running under Gunicorn, LifecycleLogging automatically detects and inherits Gunicorn's logger configuration:
+
+```python
+# The logger will automatically use Gunicorn's handlers if available
+logger = Logging(
+    enable_console=True,
+    enable_file=True
+)
+```
 
 ## Development
 
-To contribute to LifecycleLogging:
+```bash
+# Install development dependencies
+pip install -e ".[dev,test,docs]"
 
-1. Clone the repository:
+# Run tests
+make test
 
-   ```bash
-   git clone https://github.com/yourusername/lifecyclelogging.git
-   ```
+# Run linting and type checks
+make check
 
-2. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run tests:
-   ```bash
-   python -m unittest discover
-   ```
+# Build documentation
+make docs
+```
 
 ## Documentation
 
-The full documentation is available [here](docs/_build/html/index.html).
+Full documentation is available in the [docs](docs/) directory.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 

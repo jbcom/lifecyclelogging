@@ -8,17 +8,7 @@ from typing import Any
 import pytest
 
 from lifecyclelogging import Logging
-from lifecyclelogging.logging import LogLevel
-
-
-@pytest.fixture
-def logger() -> Logging:
-    """Create a logger instance for testing with outputs disabled.
-
-    Returns:
-        Logging: A logger instance with console and file outputs disabled.
-    """
-    return Logging(enable_console=False, enable_file=False)
+from lifecyclelogging.log_types import LogLevel
 
 
 def test_logger_initialization() -> None:

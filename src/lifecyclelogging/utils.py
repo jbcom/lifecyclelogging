@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+
 from collections.abc import Mapping, Sequence
 from copy import copy, deepcopy
 from typing import Any
@@ -22,8 +23,17 @@ def get_log_level(level: int | str) -> int:
         int: The corresponding logging level integer.
     """
     if isinstance(level, str):
-        return logging._nameToLevel.get(level.upper(), DEFAULT_LOG_LEVEL)  # type: ignore[attr-defined]
-    return level if level in logging._levelToName else DEFAULT_LOG_LEVEL  # type: ignore[attr-defined]
+        try:
+            return {
+                "CRITICAL": logging.CRITICAL,
+                "ERROR": logging.ERROR,
+                "WARNING": logging.WARNING,
+                "INFO": logging.INFO,
+                "DEBUG": logging.DEBUG
+            }[level.upper()]
+        except KeyError:
+            return DEFAULT_LOG_LEVEL
+    return level if isinstance(level, int) else DEFAULT_LOG_LEVEL
 
 
 def get_loggers() -> list[logging.Logger]:
@@ -67,20 +77,22 @@ def sanitize_json_data(data: Any) -> Any:
     """Sanitize data for JSON serialization.
 
     Args:
-        data (Any): The data to sanitize.
+        data: The data to sanitize.
 
     Returns:
         Any: The sanitized data suitable for JSON serialization.
     """
+    def _sanitize_number(num: float) -> int | float | str:
+        try:
+            num_abs = abs(num)
+            return str(num) if num_abs > 2**53 else num
+        except OverflowError:
+            return str(num)
+
     if isinstance(data, (bool, str, type(None))):
         return data
     if isinstance(data, (int, float)):
-        try:
-            if abs(data) > 2**53:
-                return str(data)
-        except OverflowError:
-            return str(data)
-        return data
+        return _sanitize_number(data)
     if isinstance(data, dict):
         return {str(k): sanitize_json_data(v) for k, v in data.items()}
     if isinstance(data, (list, tuple)):
@@ -95,23 +107,23 @@ def add_labeled_json(
     """Add labeled JSON data to the message.
 
     Args:
-        msg (str): The base message to append data to.
-        labeled_data (Mapping[str, Mapping[str, Any]]): The labeled JSON data to append.
+        msg: The base message to append data to.
+        labeled_data: The labeled JSON data to append.
 
     Returns:
         str: The message with appended labeled JSON data.
     """
-    for label, jd in deepcopy(labeled_data).items():
-        if not isinstance(jd, Mapping):
-            jd = {label: jd}
+    for label, data in deepcopy(labeled_data).items():
+        if not isinstance(data, Mapping):
+            mapped_data = {label: data}
             msg += "\n:" + wrap_raw_data_for_export(
-                sanitize_json_data(jd),
+                sanitize_json_data(mapped_data),
                 allow_encoding=True,
             )
             continue
 
         msg += f"\n{label}:\n" + wrap_raw_data_for_export(
-            sanitize_json_data(jd),
+            sanitize_json_data(data),
             allow_encoding=True,
         )
     return msg

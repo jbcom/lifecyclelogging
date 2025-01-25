@@ -4,11 +4,20 @@
 Welcome to LifecycleLogging Docs
 ================================
 
+A comprehensive logging utility for managing application lifecycle logs.
+
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
-   api_reference
-   contributing
    getting_started
    usage
-   apidocs/index
+   api_reference
+   contributing
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

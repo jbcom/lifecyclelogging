@@ -4,17 +4,21 @@ from __future__ import annotations
 
 import logging
 import os
+
 from collections import defaultdict
-from collections.abc import Mapping, Sequence
-from pathlib import Path
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from extended_data_types import get_unique_signature, strtobool
 
 from .const import VERBOSITY
 from .handlers import add_console_handler, add_file_handler
-from .types import LogLevel
 from .utils import add_json_data, clear_existing_handlers, find_logger, get_log_level
+
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+
+    from .log_types import LogLevel
 
 
 class Logging:
@@ -65,7 +69,6 @@ class Logging:
         - Console/file output based on parameters and env vars
         - Gunicorn logger integration if available
         """
-
         # Output configuration
         self.enable_console = enable_console
         self.enable_file = enable_file
