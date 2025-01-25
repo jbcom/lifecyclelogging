@@ -3,7 +3,7 @@ Contributing Guide
 ================================
 
 Development Setup
----------------
+-----------------
 
 1. Clone the repository
 2. Create development environment:
@@ -25,7 +25,7 @@ Development Setup
       make format
 
 Pull Request Guidelines
---------------------
+-----------------------
 
 1. Add tests for new features
 2. Update documentation

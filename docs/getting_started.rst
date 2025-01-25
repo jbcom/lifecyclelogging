@@ -3,7 +3,7 @@ Getting Started
 ================================
 
 Installation
------------
+------------
 
 You can install LifecycleLogging using pip:
 
@@ -12,10 +12,10 @@ You can install LifecycleLogging using pip:
    pip install lifecyclelogging
 
 Quick Start
-----------
+-----------
 
 Basic Usage
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Here's a simple example of using LifecycleLogging:
 
@@ -32,7 +32,7 @@ Here's a simple example of using LifecycleLogging:
    logger.logged_statement("Warning: high memory usage", log_level="warning")
 
 File Logging
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 To log to a file instead of (or in addition to) the console:
 
@@ -48,7 +48,7 @@ To log to a file instead of (or in addition to) the console:
    logger.logged_statement("This goes to the log file", log_level="info")
 
 JSON Data Logging
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 LifecycleLogging can handle structured data:
 
@@ -67,7 +67,7 @@ LifecycleLogging can handle structured data:
    )
 
 Log Markers
-~~~~~~~~~~
+~~~~~~~~~~~
 
 You can group related log messages using markers:
 
@@ -84,7 +84,7 @@ You can group related log messages using markers:
    user_logs = logger.logs["user_activity"]
 
 Verbosity Control
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Control log output verbosity:
 
@@ -98,7 +98,7 @@ Control log output verbosity:
    )
 
 Development Setup
----------------
+-----------------
 
 For development:
 

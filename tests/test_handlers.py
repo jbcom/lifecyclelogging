@@ -1,4 +1,5 @@
-"""Tests for logging handlers."""
+"""Tests for logging handlers in the lifecyclelogging package."""
+
 from __future__ import annotations
 
 import logging
@@ -10,7 +11,11 @@ from lifecyclelogging.handlers import add_console_handler, add_file_handler
 
 
 def test_add_file_handler(tmp_path: Path) -> None:
-    """Test adding a file handler."""
+    """Test adding a file handler to a logger.
+
+    This test verifies that a file handler is correctly added to a logger
+    and that invalid file names raise an error.
+    """
     logger = logging.getLogger("test_file")
     log_file = "test_file.log"
 
@@ -22,7 +27,10 @@ def test_add_file_handler(tmp_path: Path) -> None:
 
 
 def test_add_console_handler() -> None:
-    """Test adding a console handler."""
+    """Test adding a console handler to a logger.
+
+    This test verifies that a console handler is correctly added to a logger.
+    """
     logger = logging.getLogger("test_console")
     add_console_handler(logger)
     assert len(logger.handlers) == 1

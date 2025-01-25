@@ -10,7 +10,12 @@ from rich.logging import RichHandler
 
 
 def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
-    """Add a file handler to the logger, ensuring the file name is valid."""
+    """Add a file handler to the logger, ensuring the file name is valid.
+
+    Args:
+        logger (logging.Logger): The logger to which the file handler will be added.
+        log_file_name (str): The name of the log file.
+    """
     # Sanitize the file name
     sanitized_name = re.sub(r"[^0-9a-zA-Z]+", "_", log_file_name.rstrip(".log"))
     if not sanitized_name[:1].isalnum():
@@ -19,14 +24,14 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
             raise RuntimeError(
                 f"Malformed log file name: {log_file_name} must contain at least one ASCII character",
             )
-        sanitized_name = sanitized_name[first_alpha.start():]
+        sanitized_name = sanitized_name[first_alpha.start() :]
 
     # Use the provided path directly
     log_file_path = Path(log_file_name).resolve()
-    
+
     # Ensure the directory exists
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Add the file handler
     file_handler = logging.FileHandler(log_file_path)
     file_formatter = logging.Formatter(
@@ -37,7 +42,11 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
 
 
 def add_console_handler(logger: logging.Logger) -> None:
-    """Adds a Rich console handler to the logger."""
+    """Adds a Rich console handler to the logger.
+
+    Args:
+        logger (logging.Logger): The logger to which the console handler will be added.
+    """
     console_handler = RichHandler(rich_tracebacks=True)
     console_formatter = logging.Formatter("%(message)s", datefmt="[%X]")
     console_handler.setFormatter(console_formatter)

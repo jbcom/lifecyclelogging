@@ -14,8 +14,7 @@ from extended_data_types import get_unique_signature, strtobool
 from .const import VERBOSITY
 from .handlers import add_console_handler, add_file_handler
 from .types import LogLevel
-from .utils import (add_json_data, clear_existing_handlers, find_logger,
-                    get_log_level)
+from .utils import add_json_data, clear_existing_handlers, find_logger, get_log_level
 
 
 class Logging:
@@ -30,17 +29,17 @@ class Logging:
     """
 
     def __init__(
-            self,
-            enable_console: bool = False,
-            enable_file: bool = True,
-            logger: logging.Logger | None = None,
-            logger_name: str | None = None,
-            log_file_name: str | None = None,
-            default_storage_marker: str | None = None,
-            allowed_levels: Sequence[str] | None = None,
-            denied_levels: Sequence[str] | None = None,
-            enable_verbose_output: bool = False,
-            verbosity_threshold: int = VERBOSITY,
+        self,
+        enable_console: bool = False,
+        enable_file: bool = True,
+        logger: logging.Logger | None = None,
+        logger_name: str | None = None,
+        log_file_name: str | None = None,
+        default_storage_marker: str | None = None,
+        allowed_levels: Sequence[str] | None = None,
+        denied_levels: Sequence[str] | None = None,
+        enable_verbose_output: bool = False,
+        verbosity_threshold: int = VERBOSITY,
     ) -> None:
         """Initialize the Logging class with options for console and file logging.
 
@@ -99,12 +98,21 @@ class Logging:
         self.log_rotation_count = 0
 
     def _configure_logger(
-            self,
-            logger: logging.Logger | None = None,
-            logger_name: str | None = None,
-            log_file_name: str | None = None,
+        self,
+        logger: logging.Logger | None = None,
+        logger_name: str | None = None,
+        log_file_name: str | None = None,
     ) -> logging.Logger:
-        """Configure the logger instance."""
+        """Configure the logger instance.
+
+        Args:
+            logger: An existing logger instance to use.
+            logger_name: The name for a new logger instance.
+            log_file_name: The name of the log file if file logging enabled.
+
+        Returns:
+            logging.Logger: The configured logger instance.
+        """
         logger_name = logger_name or get_unique_signature(self)
         log_file_name = (
             log_file_name or os.getenv("LOG_FILE_NAME") or f"{logger_name}.log"
@@ -121,7 +129,12 @@ class Logging:
         return logger
 
     def _setup_handlers(self, logger: logging.Logger, log_file_name: str) -> None:
-        """Set up console and file handlers."""
+        """Set up console and file handlers.
+
+        Args:
+            logger: The logger to which handlers will be added.
+            log_file_name: The name of the log file for file handler.
+        """
         gunicorn_logger = find_logger("gunicorn.error")
         if gunicorn_logger:
             logger.handlers = gunicorn_logger.handlers
@@ -148,10 +161,13 @@ class Logging:
         A message is not suppressed if:
         1. The current context marker is in verbosity_bypass_markers
         2. Verbosity level <= threshold and either:
-           - verbose=False, or
-           - verbose=True and verbose output is enabled
+        - verbose=False, or
+        - verbose=True and verbose output is enabled
         """
-        if self.current_context_marker and self.current_context_marker in self.verbosity_bypass_markers:
+        if (
+            self.current_context_marker
+            and self.current_context_marker in self.verbosity_bypass_markers
+        ):
             return False
 
         if verbosity > 1:
@@ -163,10 +179,10 @@ class Logging:
         return verbosity > self.verbosity_threshold
 
     def _prepare_message(
-            self,
-            msg: str,
-            context_marker: str | None,
-            identifiers: Sequence[str] | None,
+        self,
+        msg: str,
+        context_marker: str | None,
+        identifiers: Sequence[str] | None,
     ) -> str:
         """Prepare the log message with context markers and identifiers.
 
@@ -191,12 +207,12 @@ class Logging:
         return msg
 
     def _store_logged_message(
-            self,
-            msg: str,
-            log_level: LogLevel,
-            storage_marker: str | None,
-            allowed_levels: Sequence[str] | None,
-            denied_levels: Sequence[str] | None,
+        self,
+        msg: str,
+        log_level: LogLevel,
+        storage_marker: str | None,
+        allowed_levels: Sequence[str] | None,
+        denied_levels: Sequence[str] | None,
     ) -> None:
         """Store the logged message if it meets the filtering criteria.
 
@@ -220,24 +236,26 @@ class Logging:
         allowed_levels = allowed_levels or []
         denied_levels = denied_levels or []
 
-        if (not allowed_levels or log_level in allowed_levels) and log_level not in denied_levels:
+        if (
+            not allowed_levels or log_level in allowed_levels
+        ) and log_level not in denied_levels:
             self.stored_messages[storage_marker].add(
                 f":warning: {msg}" if log_level not in ["debug", "info"] else msg,
             )
 
     def logged_statement(
-            self,
-            msg: str,
-            json_data: Mapping[str, Any] | Sequence[Mapping[str, Any]] | None = None,
-            labeled_json_data: Mapping[str, Mapping[str, Any]] | None = None,
-            identifiers: Sequence[str] | None = None,
-            verbose: bool = False,
-            verbosity: int = 1,
-            context_marker: str | None = None,
-            log_level: LogLevel = "debug",
-            storage_marker: str | None = None,
-            allowed_levels: Sequence[str] | None = None,
-            denied_levels: Sequence[str] | None = None,
+        self,
+        msg: str,
+        json_data: Mapping[str, Any] | Sequence[Mapping[str, Any]] | None = None,
+        labeled_json_data: Mapping[str, Mapping[str, Any]] | None = None,
+        identifiers: Sequence[str] | None = None,
+        verbose: bool = False,
+        verbosity: int = 1,
+        context_marker: str | None = None,
+        log_level: LogLevel = "debug",
+        storage_marker: str | None = None,
+        allowed_levels: Sequence[str] | None = None,
+        denied_levels: Sequence[str] | None = None,
     ) -> str | None:
         """Log a statement with optional data, context marking, and storage.
 

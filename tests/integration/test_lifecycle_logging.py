@@ -1,3 +1,5 @@
+"""Integration tests for the Logging class in lifecyclelogging."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,24 +11,35 @@ from lifecyclelogging import Logging
 
 @pytest.fixture
 def temp_logger(tmp_path: Path) -> Logging:
-    """Create a logger instance with file output for integration testing."""
+    """Create a logger instance with file output for integration testing.
+
+    Args:
+        tmp_path (Path): Temporary path for creating log files.
+
+    Returns:
+        Logging: A logger instance configured for file output.
+    """
     log_file_path = tmp_path / "test_app.log"
     logger = Logging(
         enable_file=True,
         log_file_name=str(log_file_path),
-        logger_name="integration_test"
+        logger_name="integration_test",
     )
-    
+
     # Debugging: Print the logger handlers and file paths to verify configuration
     for handler in logger.logger.handlers:
-        if hasattr(handler, 'baseFilename'):
+        if hasattr(handler, "baseFilename"):
             print(f"Handler file path: {handler.baseFilename}")
-    
+
     return logger
 
 
 def test_full_logging_lifecycle(temp_logger: Logging, tmp_path: Path) -> None:
-    """Test the complete lifecycle of logging with file output."""
+    """Test the complete lifecycle of logging with file output.
+
+    This test verifies basic message logging, context and storage markers,
+    and file output functionality.
+    """
     # Test basic message
     basic_msg = "Basic message"
     basic_result = temp_logger.logged_statement(
@@ -62,7 +75,11 @@ def test_full_logging_lifecycle(temp_logger: Logging, tmp_path: Path) -> None:
 
 
 def test_verbosity_integration(temp_logger: Logging) -> None:
-    """Test verbosity controls in an integrated way."""
+    """Test verbosity controls in an integrated way.
+
+    This test checks that messages are logged or suppressed based on verbosity
+    settings and thresholds.
+    """
     temp_logger.enable_verbose_output = True
     temp_logger.verbosity_threshold = 2
 
@@ -87,7 +104,11 @@ def test_verbosity_integration(temp_logger: Logging) -> None:
 
 
 def test_marker_integration(temp_logger: Logging) -> None:
-    """Test both marker systems working together."""
+    """Test both marker systems working together.
+
+    This test verifies that context and storage markers function correctly
+    and that verbosity bypass markers override verbosity settings.
+    """
     context_marker = "context_test"
     storage_marker = "storage_test"
 

@@ -3,10 +3,10 @@ Usage Guide
 ================================
 
 Configuration
------------
+-------------
 
 Logger Initialization
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 The LifecycleLogging package provides multiple configuration options:
 
@@ -23,7 +23,7 @@ The LifecycleLogging package provides multiple configuration options:
    )
 
 Log Levels
----------
+----------
 
 Available log levels from lowest to highest priority:
 
@@ -36,10 +36,10 @@ Available log levels from lowest to highest priority:
    logger.logged_statement("Critical message", log_level="critical")
 
 Structured Logging
-----------------
+------------------
 
 JSON Data
-~~~~~~~~
+~~~~~~~~~
 
 Log structured data along with messages:
 
@@ -56,7 +56,7 @@ Log structured data along with messages:
    )
 
 Labeled JSON Data
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Log multiple JSON objects with labels:
 
@@ -72,10 +72,10 @@ Log multiple JSON objects with labels:
    )
 
 Advanced Features
---------------
+-----------------
 
 Log Markers
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Group related logs using markers:
 
@@ -95,7 +95,7 @@ Group related logs using markers:
    database_logs = logger.logs["database"]
 
 Verbosity Controls
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 Control output detail level:
 
@@ -117,7 +117,7 @@ Control output detail level:
    )
 
 Error Tracking
-~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 Track and access errors:
 
@@ -135,7 +135,7 @@ Track and access errors:
    all_errors = logger.errors
 
 Environment Variables
-------------------
+---------------------
 
 Configuration via environment variables:
 
@@ -152,7 +152,7 @@ Configuration via environment variables:
    export LOG_FILE_NAME=custom.log
 
 Best Practices
-------------
+--------------
 
 1. **Log Level Selection**
    - Use "debug" for detailed troubleshooting

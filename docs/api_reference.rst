@@ -3,7 +3,7 @@ API Reference
 ================================
 
 Logging Class
-------------
+-------------
 
 .. py:class:: lifecyclelogging.Logging
 
