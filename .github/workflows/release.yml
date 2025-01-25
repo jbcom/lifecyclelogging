@@ -1,0 +1,212 @@
+name: Test & Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build & validate package
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.inspect.outputs.package_version }}
+      artifact_name: ${{ steps.inspect.outputs.artifact_name }}
+      supported_pythons: ${{ steps.inspect.outputs.supported_python_classifiers_json_array }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build & inspect package
+        id: inspect
+        uses: hynek/build-and-inspect-python-package@v2
+
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(needs.build.outputs.supported_pythons) }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup uv with cache
+        uses: hynek/setup-cached-uv@v2
+
+      - name: Install dependencies
+        run: |
+          uv pip install nox
+
+      - name: Run tests with nox
+        run: |
+          nox -s tests-${{ matrix.python-version }}
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-py${{ matrix.python-version }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 14
+          if-no-files-found: error
+
+  quality:
+    name: Code Quality
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv with cache
+        uses: hynek/setup-cached-uv@v2
+
+      - name: Install nox
+        run: |
+          uv pip install nox
+
+      - name: Run type checks
+        run: |
+          nox -s type
+
+      - name: Run linting
+        run: |
+          nox -s lint
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: docs-${{ github.ref }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv with cache
+        uses: hynek/setup-cached-uv@v2
+
+      - name: Install nox
+        run: |
+          uv pip install nox
+
+      - name: Build documentation
+        run: |
+          nox -s docs
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: docs/_build/html/
+          retention-days: 14
+          if-no-files-found: error
+
+      # Optional: Deploy to GitHub Pages if on main branch
+      - name: Setup Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html/
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  release:
+    name: Semantic Release
+    needs: [build, test, docs]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+    outputs:
+      released: ${{ steps.semrel.outputs.released }}
+      version: ${{ steps.semrel.outputs.version }}
+      tag: ${{ steps.semrel.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Python Semantic Release
+        id: semrel
+        uses: python-semantic-release/python-semantic-release@v9.16.1
+        with:
+          github_token: ${{ secrets.RELEASE_TOKEN }}
+          git_committer_name: github-actions[bot]
+          git_committer_email: "github-actions[bot]@users.noreply.github.com"
+
+      - name: Python Semantic Release - Publish
+        uses: python-semantic-release/publish-action@v9.16.1
+        if: steps.semrel.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.RELEASE_TOKEN }}
+          tag: ${{ steps.semrel.outputs.tag }}
+
+  publish:
+    name: Publish to PyPI
+    needs: [build, release]
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/lifecyclelogging/${{ needs.release.outputs.version }}
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          provide-oidc-token: true
