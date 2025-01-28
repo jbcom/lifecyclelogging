@@ -22,9 +22,7 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
     if not sanitized_name[:1].isalnum():
         first_alpha = re.search(r"[A-Za-z0-9]", sanitized_name)
         if not first_alpha:
-            error_message = (
-                f"Malformed log file name: {log_file_name} must contain at least one ASCII character"
-            )
+            error_message = f"Malformed log file name: {log_file_name} must contain at least one ASCII character"
             raise RuntimeError(error_message)
         sanitized_name = sanitized_name[first_alpha.start() :]
 

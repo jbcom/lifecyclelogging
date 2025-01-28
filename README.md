@@ -1,6 +1,11 @@
 # LifecycleLogging
 
+[![LifecycleLogging Logo](docs/_static/logo.png)](https://github.com/jbcom/lifecyclelogging)
+
 A comprehensive logging utility for managing application lifecycle logs, combining the power of Python's `logging` with rich output formatting.
+
+[![Documentation](https://img.shields.io/badge/docs-github.io-blue.svg)](https://jbcom.github.io/lifecyclelogging/)
+[![GitHub](https://img.shields.io/badge/github-repo-black.svg)](https://github.com/jbcom/lifecyclelogging)
 
 ## Installation
 
@@ -110,13 +115,9 @@ make check
 make docs
 ```
 
-## Documentation
-
-Full documentation is available in the [docs](docs/) directory.
-
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - See [LICENSE](https://github.com/jbcom/lifecyclelogging/blob/main/LICENSE) for details.
 
 ---
 

@@ -29,7 +29,7 @@ def get_log_level(level: int | str) -> int:
                 "ERROR": logging.ERROR,
                 "WARNING": logging.WARNING,
                 "INFO": logging.INFO,
-                "DEBUG": logging.DEBUG
+                "DEBUG": logging.DEBUG,
             }[level.upper()]
         except KeyError:
             return DEFAULT_LOG_LEVEL
@@ -82,6 +82,7 @@ def sanitize_json_data(data: Any) -> Any:
     Returns:
         Any: The sanitized data suitable for JSON serialization.
     """
+
     def _sanitize_number(num: float) -> int | float | str:
         try:
             num_abs = abs(num)

@@ -74,14 +74,14 @@ Build and view documentation:
 Pull Request Guidelines
 =======================
 
-1. Create a feature branch from `main`
+1. Create a feature branch from "main"
 2. Update documentation for any new features
 3. Add tests for new functionality
 4. Ensure all checks pass:
-   - Code formatting (`make format`)
-   - Linting (`make lint`)
-   - Type checking (`make type`)
-   - Tests (`make test`)
+   - Code formatting ("make format")
+   - Linting ("make lint")
+   - Type checking ("make type")
+   - Tests ("make test")
 5. Submit a pull request
 
 =================

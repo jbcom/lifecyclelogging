@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from hypothesis import given
 from hypothesis import strategies as st
-
 from lifecyclelogging import Logging
 
 

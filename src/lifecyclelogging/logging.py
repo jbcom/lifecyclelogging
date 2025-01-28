@@ -1,4 +1,14 @@
-"""Core logging functionality."""
+"""Core logging functionality for flexible and configurable logging management.
+
+This module provides a Logging class that supports advanced logging features including:
+- Configurable console and file logging
+- Message storage and filtering
+- Verbosity control
+- Context and storage marker systems
+
+The module allows for fine-grained control over log message handling, storage,
+and output across different logging contexts.
+"""
 
 from __future__ import annotations
 
@@ -6,19 +16,19 @@ import logging
 import os
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, cast
+from typing import (
+    Any,
+    Mapping,
+    Sequence,
+    cast,
+)
 
 from extended_data_types import get_unique_signature, strtobool
 
 from .const import VERBOSITY
 from .handlers import add_console_handler, add_file_handler
+from .log_types import LogLevel
 from .utils import add_json_data, clear_existing_handlers, find_logger, get_log_level
-
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
-
-    from .log_types import LogLevel
 
 
 class Logging:

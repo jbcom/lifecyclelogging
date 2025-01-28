@@ -1,36 +1,78 @@
-"""Sphinx configuration for lifecyclelogging documentation."""
+import os
 
-from __future__ import annotations
-
-
-# Project information
-project = "lifecyclelogging"
-project_copyright = "2024, Jon Bogaty"
+project = "LifecycleLogging"
 author = "Jon Bogaty"
-
-# The full version, including alpha/beta/rc tags
+copyright_notice = f"2025, {author}"
 version = "0.1.0"
-release = version
 
-# Extensions
 extensions = [
     "autodoc2",
-    "sphinx.ext.viewcode",
-    "sphinx_rtd_theme",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "myst_parser",
 ]
 
-# Autodoc2 settings
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
+
+# Default role
+default_role = "py:obj"
+
+# HTML output settings
+html_theme = "sphinxawesome_theme"
+html_static_path = ["_static"]
+html_baseurl = "https://jbcom.github.io/lifecyclelogging/"
+
+html_context = {
+    "display_github": True,
+    "github_user": "jbcom",
+    "github_repo": "lifecyclelogging",
+    "github_version": "main",
+}
+
+html_logo = "_static/logo.png"
+
+html_permalinks_icon = "<span>⚓</span>"
+
+autodoc2_render_plugin = "myst"
+
 autodoc2_packages = [
-    {
-        "path": "../src/lifecyclelogging",
-        "auto_mode": True,
-    }
+    {"path": "../src/lifecyclelogging", "auto_mode": True, "module": "lifecyclelogging"}
 ]
 
-autodoc2_docstring_parser = "google"  # Use Google style docstrings
+# Add annotation replacements for common type hints
+autodoc2_replace_annotations = [
+    ("typing.Literal", "Literal"),
+    ("typing.TypeAlias", "TypeAlias"),
+    ("typing_extensions.TypeAlias", "TypeAlias"),
+]
 
-# List of patterns to exclude from document discovery
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+# Override docstring parser for specific modules
+autodoc2_docstring_parser_regexes = [
+    (r"lifecyclelogging\.log_types", "rst"),  # Ensure RST parsing for type modules
+]
 
-# The theme to use for HTML and Help pages
-html_theme = "sphinx_rtd_theme"
+# Include all docstrings, not just direct ones
+autodoc2_docstrings = "all"
+
+# Show class inheritance
+autodoc2_class_inheritance = True
+
+# Always show annotations
+autodoc2_annotations = True
+
+nitpick_ignore = [
+    ("py:class", "lifecyclelogging.log_types.LogLevel"),
+]
+
+# Also add a regex pattern to catch any similar type references
+nitpick_ignore_regex = [
+    (r"py:class", r"lifecyclelogging\.log_types\..*"),
+]
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+}
