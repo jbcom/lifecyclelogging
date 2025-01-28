@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.1.1 (2025-01-28)
+
+### Bug Fixes
+
+- Improvements to overall release architecture
+  ([`060ed7e`](https://github.com/jbcom/lifecyclelogging/commit/060ed7e44e167b3f85715fd2c2c36b89beae79d4))
+
+
 ## v0.1.0 (2025-01-25)
 
 ### Bug Fixes
