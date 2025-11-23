@@ -234,9 +234,9 @@ class Logging:
         msg: str,
         log_level: LogLevel,
         storage_marker: str | None,
-            allowed_levels: tuple[str, ...],
-            denied_levels: tuple[str, ...],
-        ) -> None:
+        allowed_levels: tuple[str, ...],
+        denied_levels: tuple[str, ...],
+    ) -> None:
         """Store the logged message if it meets the filtering criteria.
 
         Args:
