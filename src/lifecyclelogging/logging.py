@@ -100,8 +100,8 @@ class Logging:
         self.verbosity_bypass_markers: list[str] = []
 
         # Log level filtering
-        self.allowed_levels = allowed_levels
-        self.denied_levels = denied_levels
+        self.allowed_levels = self._normalize_levels(allowed_levels)
+        self.denied_levels = self._normalize_levels(denied_levels)
 
         # Verbosity control
         self.enable_verbose_output = enable_verbose_output
@@ -109,6 +109,21 @@ class Logging:
 
         # File management
         self.log_rotation_count = 0
+
+    @staticmethod
+    def _normalize_levels(levels: Sequence[str] | None) -> tuple[str, ...]:
+        """Normalize provided log levels to lower-case tuples."""
+
+        if not levels:
+            return ()
+
+        return tuple(level.lower() for level in levels)
+
+    def register_verbosity_bypass_marker(self, marker: str) -> None:
+        """Add a context marker that bypasses verbosity restrictions."""
+
+        if marker not in self.verbosity_bypass_markers:
+            self.verbosity_bypass_markers.append(marker)
 
     def _configure_logger(
         self,
@@ -209,9 +224,6 @@ class Logging:
         """
         if context_marker is not None:
             self.current_context_marker = context_marker
-
-        if context_marker is not None:
-            self.current_context_marker = context_marker
             msg = f"[{self.current_context_marker}] {msg}"
 
         if identifiers:
@@ -224,9 +236,9 @@ class Logging:
         msg: str,
         log_level: LogLevel,
         storage_marker: str | None,
-        allowed_levels: Sequence[str] | None,
-        denied_levels: Sequence[str] | None,
-    ) -> None:
+            allowed_levels: Sequence[str] | None,
+            denied_levels: Sequence[str] | None,
+        ) -> None:
         """Store the logged message if it meets the filtering criteria.
 
         Args:
@@ -246,8 +258,8 @@ class Logging:
         if not storage_marker:
             return
 
-        allowed_levels = allowed_levels or []
-        denied_levels = denied_levels or []
+        allowed_levels = self._normalize_levels(allowed_levels)
+        denied_levels = self._normalize_levels(denied_levels)
 
         if (
             not allowed_levels or log_level in allowed_levels

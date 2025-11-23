@@ -19,10 +19,18 @@ pip install lifecyclelogging
 - Rich formatting for enhanced readability
 - Message storage with context and storage markers
 - Verbosity controls with bypass markers
+- Case-insensitive level filtering for allowed/denied storage rules
 - JSON data attachment support
 - Type-safe implementation
 - Seamless integration with existing logging systems
 - Automatic Gunicorn logger integration
+
+## Project Goals
+
+- Provide a batteries-included logging helper that stays compatible with modern Python releases
+- Keep configuration ergonomic while remaining type-safe and explicit
+- Offer sensible defaults that work locally and in containerized runtimes
+- Deliver reliable automation through testing, linting, and release workflows
 
 ## Basic Usage
 
@@ -69,6 +77,21 @@ logger.logged_statement(
     "Detailed debug info",
     verbose=True,
     verbosity=2,
+    log_level="debug"
+)
+```
+
+### Verbosity Bypass Helpers
+
+```python
+logger.register_verbosity_bypass_marker("IMPORTANT")
+
+# Will be logged regardless of verbosity settings
+logger.logged_statement(
+    "Critical info",
+    context_marker="IMPORTANT",
+    verbose=True,
+    verbosity=5,
     log_level="debug"
 )
 ```

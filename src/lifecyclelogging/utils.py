@@ -1,4 +1,4 @@
-"""Utility functions for logging configuration."""
+"""Utility helpers for LifecycleLogging internals."""
 
 from __future__ import annotations
 
