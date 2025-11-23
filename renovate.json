@@ -7,19 +7,32 @@
     {
       "description": "Group all non-major Python dependencies",
       "groupName": "python non-major",
-      "matchManagers": ["pip_requirements"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     },
     {
       "description": "Group all non-major GitHub Actions updates",
       "groupName": "github-actions non-major",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["^pyproject\\.toml$"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^pyproject\\.toml$/"
+      ],
       "matchStrings": [
         "version\\s*=\\s*\"(?<currentValue>.*?)\""
       ],
@@ -27,7 +40,9 @@
       "datasourceTemplate": "pypi"
     }
   ],
-  "schedule": ["before 5am on Monday"],
+  "schedule": [
+    "before 5am on Monday"
+  ],
   "prConcurrentLimit": 5,
   "automerge": true
 }
