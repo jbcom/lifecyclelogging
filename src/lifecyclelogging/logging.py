@@ -16,10 +16,9 @@ import logging
 import os
 
 from collections import defaultdict
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import (
     Any,
-    Sequence,
     cast,
 )
 
@@ -97,7 +96,7 @@ class Logging:
         # Message categorization and marking
         self.default_storage_marker = default_storage_marker
         self.current_context_marker: str | None = None
-        self.verbosity_bypass_markers: set[str] = set()
+        self.verbosity_bypass_markers: list[str] = []
 
         # Log level filtering
         self.allowed_levels = self._normalize_levels(allowed_levels)
@@ -113,7 +112,6 @@ class Logging:
     @staticmethod
     def _normalize_levels(levels: Sequence[str] | None) -> tuple[str, ...]:
         """Normalize provided log levels to lower-case tuples."""
-
         if not levels:
             return ()
 
@@ -121,7 +119,8 @@ class Logging:
 
     def register_verbosity_bypass_marker(self, marker: str) -> None:
         """Add a context marker that bypasses verbosity restrictions."""
-        self.verbosity_bypass_markers.add(marker)
+        if marker not in self.verbosity_bypass_markers:
+            self.verbosity_bypass_markers.append(marker)
 
     def _configure_logger(
         self,
@@ -305,11 +304,13 @@ class Logging:
 
         # Normalize levels once here before passing to storage
         final_allowed = (
-            self._normalize_levels(allowed_levels) if allowed_levels is not None
+            self._normalize_levels(allowed_levels)
+            if allowed_levels is not None
             else self.allowed_levels
         )
         final_denied = (
-            self._normalize_levels(denied_levels) if denied_levels is not None
+            self._normalize_levels(denied_levels)
+            if denied_levels is not None
             else self.denied_levels
         )
 

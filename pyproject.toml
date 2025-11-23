@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "lifecyclelogging"
 dynamic = ["version"]
 description = "A comprehensive logging utility for managing application lifecycle logs"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 readme = "README.md"
 keywords = ["logging", "lifecycle", "debug"]
@@ -154,7 +154,7 @@ lines-between-types = 1
 lines-after-imports = 2
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 strict = true
 pretty = true
 show_error_codes = true
