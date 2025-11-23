@@ -112,7 +112,8 @@ def test_register_verbosity_bypass_marker(logger: Logging) -> None:
     logger.register_verbosity_bypass_marker(marker)
 
     assert marker in logger.verbosity_bypass_markers
-    assert logger.verbosity_bypass_markers.count(marker) == 1
+    # Sets inherently prevent duplicates, so count should be 1
+    assert len([m for m in logger.verbosity_bypass_markers if m == marker]) == 1
 
 
 def test_verbosity_control(logger: Logging) -> None:
