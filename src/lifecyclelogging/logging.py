@@ -121,9 +121,7 @@ class Logging:
 
     def register_verbosity_bypass_marker(self, marker: str) -> None:
         """Add a context marker that bypasses verbosity restrictions."""
-
-        if marker not in self.verbosity_bypass_markers:
-            self.verbosity_bypass_markers.append(marker)
+        self.verbosity_bypass_markers.add(marker)
 
     def _configure_logger(
         self,
