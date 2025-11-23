@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any
 from collections.abc import Mapping
+from typing import Any
 
 import pytest
 
@@ -106,7 +106,6 @@ def test_verbosity_bypass(logger: Logging) -> None:
 
 def test_register_verbosity_bypass_marker(logger: Logging) -> None:
     """Ensure bypass markers are registered without duplication."""
-
     marker = "bypass"
     logger.register_verbosity_bypass_marker(marker)
     logger.register_verbosity_bypass_marker(marker)
@@ -184,7 +183,6 @@ def test_log_level_filtering(logger: Logging) -> None:
 
 def test_log_level_normalization() -> None:
     """Ensure allowed and denied levels are normalized for filtering."""
-
     storage_marker = "normalized"
     logger = Logging(
         enable_console=False,
