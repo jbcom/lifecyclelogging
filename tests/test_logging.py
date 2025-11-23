@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any
+from collections.abc import Mapping
 
 import pytest
 
@@ -89,7 +89,7 @@ def test_verbosity_bypass(logger: Logging) -> None:
     """
     msg = "Should appear despite verbosity"
     context_marker = "bypass_test"
-    logger.verbosity_bypass_markers.append(context_marker)
+    logger.register_verbosity_bypass_marker(context_marker)
 
     # Even with verbose disabled and high verbosity, message should appear
     result = logger.logged_statement(
@@ -102,6 +102,18 @@ def test_verbosity_bypass(logger: Logging) -> None:
 
     assert result is not None
     assert msg in result
+
+
+def test_register_verbosity_bypass_marker(logger: Logging) -> None:
+    """Ensure bypass markers are registered without duplication."""
+
+    marker = "bypass"
+    logger.register_verbosity_bypass_marker(marker)
+    logger.register_verbosity_bypass_marker(marker)
+
+    assert marker in logger.verbosity_bypass_markers
+    # Sets inherently prevent duplicates, so count should be 1
+    assert len([m for m in logger.verbosity_bypass_markers if m == marker]) == 1
 
 
 def test_verbosity_control(logger: Logging) -> None:
@@ -168,6 +180,25 @@ def test_log_level_filtering(logger: Logging) -> None:
     # Denied level should not be stored
     logger.logged_statement("Should not store", log_level="debug")  # type: ignore[arg-type]
     assert "Should not store" not in logger.stored_messages[storage_marker]
+
+
+def test_log_level_normalization() -> None:
+    """Ensure allowed and denied levels are normalized for filtering."""
+
+    storage_marker = "normalized"
+    logger = Logging(
+        enable_console=False,
+        enable_file=False,
+        allowed_levels=["INFO"],
+        denied_levels=["ERROR"],
+        default_storage_marker=storage_marker,
+    )
+
+    logger.logged_statement("Allowed", log_level="info")  # type: ignore[arg-type]
+    assert "Allowed" in logger.stored_messages[storage_marker]
+
+    logger.logged_statement("Denied", log_level="error")  # type: ignore[arg-type]
+    assert "Denied" not in logger.stored_messages[storage_marker]
 
 
 @pytest.mark.parametrize(

@@ -26,6 +26,10 @@ Logger Initialization
        denied_levels=["debug"]             # Don't store these levels
    )
 
+Case and whitespace differences in ``allowed_levels`` and ``denied_levels`` are
+normalized automatically, so "INFO" and "info" behave identically for storage
+filtering.
+
 ===========
 Log Levels
 ===========
@@ -164,7 +168,7 @@ Verbosity Bypass
 .. code-block:: python
 
    # Add marker to bypass list
-   logger.verbosity_bypass_markers.append("IMPORTANT")
+   logger.register_verbosity_bypass_marker("IMPORTANT")
 
    # Will be logged regardless of verbosity settings
    logger.logged_statement(

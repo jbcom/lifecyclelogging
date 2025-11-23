@@ -16,9 +16,9 @@ import logging
 import os
 
 from collections import defaultdict
+from collections.abc import Mapping
 from typing import (
     Any,
-    Mapping,
     Sequence,
     cast,
 )
@@ -97,11 +97,11 @@ class Logging:
         # Message categorization and marking
         self.default_storage_marker = default_storage_marker
         self.current_context_marker: str | None = None
-        self.verbosity_bypass_markers: list[str] = []
+        self.verbosity_bypass_markers: set[str] = set()
 
         # Log level filtering
-        self.allowed_levels = allowed_levels
-        self.denied_levels = denied_levels
+        self.allowed_levels = self._normalize_levels(allowed_levels)
+        self.denied_levels = self._normalize_levels(denied_levels)
 
         # Verbosity control
         self.enable_verbose_output = enable_verbose_output
@@ -109,6 +109,19 @@ class Logging:
 
         # File management
         self.log_rotation_count = 0
+
+    @staticmethod
+    def _normalize_levels(levels: Sequence[str] | None) -> tuple[str, ...]:
+        """Normalize provided log levels to lower-case tuples."""
+
+        if not levels:
+            return ()
+
+        return tuple(level.lower() for level in levels)
+
+    def register_verbosity_bypass_marker(self, marker: str) -> None:
+        """Add a context marker that bypasses verbosity restrictions."""
+        self.verbosity_bypass_markers.add(marker)
 
     def _configure_logger(
         self,
@@ -209,9 +222,6 @@ class Logging:
         """
         if context_marker is not None:
             self.current_context_marker = context_marker
-
-        if context_marker is not None:
-            self.current_context_marker = context_marker
             msg = f"[{self.current_context_marker}] {msg}"
 
         if identifiers:
@@ -224,8 +234,8 @@ class Logging:
         msg: str,
         log_level: LogLevel,
         storage_marker: str | None,
-        allowed_levels: Sequence[str] | None,
-        denied_levels: Sequence[str] | None,
+        allowed_levels: tuple[str, ...],
+        denied_levels: tuple[str, ...],
     ) -> None:
         """Store the logged message if it meets the filtering criteria.
 
@@ -233,8 +243,8 @@ class Logging:
             msg: The message to store.
             log_level: The level the message was logged at.
             storage_marker: The marker to store the message under.
-            allowed_levels: Levels that are allowed (if empty, all allowed).
-            denied_levels: Levels that are denied.
+            allowed_levels: Normalized levels that are allowed (if empty, all allowed).
+            denied_levels: Normalized levels that are denied.
 
         Messages are stored in self.stored_messages under their storage_marker if:
         1. A storage_marker is provided
@@ -245,9 +255,6 @@ class Logging:
         """
         if not storage_marker:
             return
-
-        allowed_levels = allowed_levels or []
-        denied_levels = denied_levels or []
 
         if (
             not allowed_levels or log_level in allowed_levels
@@ -296,12 +303,22 @@ class Logging:
         final_msg = self._prepare_message(msg, context_marker, identifiers)
         final_msg = add_json_data(final_msg, json_data, labeled_json_data)
 
+        # Normalize levels once here before passing to storage
+        final_allowed = (
+            self._normalize_levels(allowed_levels) if allowed_levels is not None
+            else self.allowed_levels
+        )
+        final_denied = (
+            self._normalize_levels(denied_levels) if denied_levels is not None
+            else self.denied_levels
+        )
+
         self._store_logged_message(
             final_msg,
             log_level,
             storage_marker or self.default_storage_marker,
-            allowed_levels or self.allowed_levels,
-            denied_levels or self.denied_levels,
+            final_allowed,
+            final_denied,
         )
 
         logger_method = getattr(self.logger, log_level)
