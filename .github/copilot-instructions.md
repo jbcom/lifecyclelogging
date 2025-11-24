@@ -26,10 +26,17 @@ This repository uses **CalVer auto-versioning** with automatic PyPI releases. Ev
 Always use extended-data-types utilities when available:
 ```python
 # ✅ Good
-from extended_data_types import strtobool, strtoint, strtopath
+from extended_data_types import (
+    get_unique_signature,
+    make_raw_data_export_safe,
+    strtobool,
+    strtoint,
+    strtopath,
+)
 
 # ❌ Avoid
 def custom_str_to_bool(val): ...
+def custom_get_signature(obj): ...
 ```
 
 ### Type Hints
@@ -56,6 +63,8 @@ Always sanitize data before logging or exporting. Use `make_raw_data_export_safe
 ```python
 from extended_data_types import make_raw_data_export_safe
 safe_data = make_raw_data_export_safe(data, export_to_yaml=False)
+```
+
 ## Version Management
 
 Version is auto-generated during CI using `.github/scripts/set_version.py`:
