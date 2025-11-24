@@ -111,7 +111,7 @@ def main():
     if not updated:
         raise ValueError(f"Failed to update __version__ in {init_file}")
 
-    init_file.write_text("".join(lines))
+    print(f"Generated version: {new_version}")
 
     # Update docs/conf.py version
     update_docs_version(new_version)
