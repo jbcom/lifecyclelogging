@@ -166,11 +166,3 @@ warn_return_any = false
 module = "tests.*"
 ignore_errors = true
 
-[tool.semantic_release]
-branch = "main"
-allow_zero_version = false
-version_variables = [
-    "src/lifecyclelogging/__init__.py:__version__",
-]
-build_command = "python -m build"
-upload_to_vcs_release = true
