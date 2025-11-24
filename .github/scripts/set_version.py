@@ -84,8 +84,8 @@ def main():
     # Get current date in UTC
     now = datetime.now(timezone.utc)
 
-    # Generate CalVer: YYYY.MM.BUILD (with zero-padded month)
-    new_version = f"{now.year}.{now.month:02d}.{run_number}"
+    # Generate CalVer: YYYY.MM.BUILD (month not zero-padded, per CalVer convention)
+    new_version = f"{now.year}.{now.month}.{run_number}"
 
     # Find and update __init__.py
     init_file = find_init_file()
