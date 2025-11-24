@@ -249,7 +249,7 @@ This workflow was created to solve real problems:
 
 **Benefits We Gained:**
 - ✅ Predictable: every main push = release
-- ✅ Simple: ~70 lines of Python for versioning
+- ✅ Simple: 126 lines of Python for versioning
 - ✅ Reliable: no conditional logic to fail
 - ✅ Fast: no git history analysis
 - ✅ Clean: no bot commits or tags
