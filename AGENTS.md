@@ -236,5 +236,5 @@ If you're an AI agent uncertain about a suggestion:
 
 ---
 
-**Last Updated:** 2025-11-24  
+**Last Updated:** 2025-11-24
 **Workflow Version:** Unified CI v1.0 (python-semantic-release@v9.17.0)
