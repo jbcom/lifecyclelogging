@@ -49,6 +49,13 @@ def func(data: Dict[str, Any]) -> Dict[str, Any]:
 - Maintain or improve test coverage
 - Use pytest fixtures appropriately
 
+### Logging Best Practices
+
+#### Data Sanitization
+Always sanitize data before logging or exporting. Use `make_raw_data_export_safe` from `extended_data_types`:
+```python
+from extended_data_types import make_raw_data_export_safe
+safe_data = make_raw_data_export_safe(data, export_to_yaml=False)
 ## Version Management
 
 Version is auto-generated during CI using `.github/scripts/set_version.py`:
