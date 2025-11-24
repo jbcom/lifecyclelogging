@@ -29,8 +29,6 @@ def find_init_file():
     version_pattern = re.compile(r'^\s*__version__\s*=\s*["\'].*["\']')
 
     # Find all __init__.py files in src/
-    for init_file in src.rglob("__init__.py"):
-        content = init_file.read_text()
     # Find all __init__.py files in src/ that contain __version__
     found_files = [
         f for f in src.rglob("__init__.py") if "__version__" in f.read_text()
