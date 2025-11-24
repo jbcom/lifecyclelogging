@@ -108,13 +108,10 @@ def main():
         raise ValueError(f"Failed to update __version__ in {init_file}")
 
     print(f"Generated version: {new_version}")
+    print(f"Updated version in {init_file}")
 
     # Update docs/conf.py version
     update_docs_version(new_version)
-
-    # For logging/debugging only: this print is not captured as a GitHub Actions output.
-    print(f"VERSION={new_version}")
-    print(f"Updated version in {init_file}")
 
     # Set output for workflow
     if github_output := os.environ.get("GITHUB_OUTPUT"):
