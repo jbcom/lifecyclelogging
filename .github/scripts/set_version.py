@@ -26,7 +26,7 @@ def find_init_file():
         raise FileNotFoundError("src/ directory not found")
 
     # Regex pattern to match __version__ assignment
-    version_pattern = re.compile(r'^\s*__version__\s*=\s*["\'].*["\']')
+    version_pattern = re.compile(r'^\s*__version__\s*=\s*(["\']).*?\1')
 
     found_files = [
         f for f in src.rglob("__init__.py") if "__version__" in f.read_text()
@@ -53,7 +53,7 @@ def update_docs_version(new_version: str) -> None:
     lines = content.splitlines(keepends=True)
 
     # Match: version = "x.y.z" with optional spaces
-    version_pattern = re.compile(r'^(\s*)version\s*=\s*["\'].*["\']')
+    version_pattern = re.compile(r'^(\s*)version\s*=\s*(["\']).*?\2')
 
     updated = False
     for i, line in enumerate(lines):
@@ -89,7 +89,7 @@ def main():
     lines = content.splitlines(keepends=True)
     # Regex to match exactly "__version__" assignment, not __version_info__ or similar
     # Matches: __version__ = "..." or __version__="..." (with/without spaces)
-    version_pattern = re.compile(r'^(\s*)__version__\s*=\s*["\'].*["\']')
+    version_pattern = re.compile(r'^(\s*)__version__\s*=\s*(["\']).*?\2')
 
     updated = False
     for i, line in enumerate(lines):
@@ -106,6 +106,7 @@ def main():
     if not updated:
         raise ValueError(f"Failed to update __version__ in {init_file}")
 
+    init_file.write_text("".join(lines))
     print(f"Generated version: {new_version}")
     print(f"Updated version in {init_file}")
 
