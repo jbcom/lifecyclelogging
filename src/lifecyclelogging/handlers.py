@@ -5,13 +5,16 @@ from __future__ import annotations
 import logging
 import re
 
-from pathlib import Path
+from extended_data_types import strtopath
 
 from rich.logging import RichHandler
 
 
 def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
     """Add a file handler to the logger, ensuring the file name is valid.
+
+    This function uses extended-data-types' strtopath for robust path handling,
+    supporting both string paths and Path objects.
 
     Args:
         logger (logging.Logger): The logger to which the file handler will be added.
@@ -26,8 +29,8 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
             raise RuntimeError(error_message)
         sanitized_name = sanitized_name[first_alpha.start() :]
 
-    # Use the provided path directly
-    log_file_path = Path(log_file_name).resolve()
+    # Use strtopath from extended-data-types for robust path handling
+    log_file_path = strtopath(log_file_name).resolve()
 
     # Ensure the directory exists
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
