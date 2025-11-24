@@ -41,7 +41,6 @@ def find_init_file():
             f"Multiple __init__.py files with __version__ found: {found_files}"
         )
     return found_files[0]
-    raise FileNotFoundError("No __init__.py with __version__ found in src/")
 
 
 def update_docs_version(new_version: str) -> None:
