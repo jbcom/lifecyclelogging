@@ -10,13 +10,10 @@ This document provides critical context for AI coding assistants (Cursor, Codex,
 
 ### Key Design Decisions (DO NOT SUGGEST CHANGING THESE)
 
-#### 1. **Semantic Release Configuration in CI YAML, NOT pyproject.toml**
-
-❌ **INCORRECT Agent Suggestion:**
-> "Add `[tool.semantic_release]` configuration to `pyproject.toml`"
+#### 1. **Semantic Release Configuration - Hybrid Approach**
 
 ✅ **CORRECT Design:**
-- All semantic-release configuration is done via **workflow parameters**
+- `pyproject.toml` contains semantic-release configuration with `version_variables`
 - The workflow uses these specific flags:
   ```yaml
   build: false          # We build with hynek/build-and-inspect-python-package
@@ -29,17 +26,32 @@ This document provides critical context for AI coding assistants (Cursor, Codex,
 
 **WHY:**
 - We use `hynek/build-and-inspect-python-package` for building (industry best practice)
-- Semantic-release handles ONLY versioning and GitHub releases
+- Semantic-release handles versioning and GitHub releases
+- `version_variables` in pyproject.toml tells semantic-release to UPDATE version in source files
+- With `commit: false`, the version update happens in-memory for the build, but isn't committed back
 - We do NOT want automated changelog commits cluttering git history
 - Manual changelog management provides better control and context
 
-#### 2. **No `pyproject.toml` Semantic Release Section Needed**
+#### 2. **Version Variables Are REQUIRED**
 
-The workflow explicitly sets `commit: false` and `changelog: false` because:
-- ✅ We manage changelogs manually
-- ✅ Version is read from `__init__.py` via hatch
-- ✅ Semantic-release only creates tags and GitHub releases
-- ❌ We don't want bot commits in git history
+The `pyproject.toml` file MUST contain:
+```toml
+[tool.semantic_release]
+branch = "main"
+allow_zero_version = false
+version_variables = [
+    "src/lifecyclelogging/__init__.py:__version__",
+]
+build_command = "python -m build"
+upload_to_vcs_release = true
+```
+
+**WHY:**
+- Without `version_variables`, semantic-release creates tags but doesn't update `__init__.py`
+- The signed build step then builds with the OLD version from the source file
+- This causes PyPI upload failures due to duplicate version numbers
+- With `version_variables`, semantic-release updates the version in-memory before the build
+- The workflow sets `commit: false` so these changes aren't committed back to git
 
 #### 3. **The `push: false` Flag is CORRECT**
 
@@ -89,8 +101,7 @@ On Push to main:
 ### What This Workflow DOES NOT DO
 
 ❌ Create changelog commits
-❌ Commit version bumps to files
-❌ Require `[tool.semantic_release]` in pyproject.toml
+❌ Commit version bumps back to repository (updates happen in-memory for build only)
 ❌ Use multiple workflow files
 ❌ Push tags back to GitHub (they're already there)
 
@@ -188,11 +199,11 @@ When PR is merged to main:
 
 ## 🎯 Common Agent Misconceptions
 
-### Misconception #1: "Missing semantic-release config"
+### Misconception #1: "Can skip semantic-release config"
 
-**Agent says:** "The workflow uses python-semantic-release but there's no [tool.semantic_release] section"
+**Agent says:** "All semantic-release configuration can be done via workflow parameters"
 
-**Reality:** This is BY DESIGN. All configuration is in the workflow YAML via parameters.
+**Reality:** The `version_variables` configuration MUST be in pyproject.toml. Without it, semantic-release won't update the version in source files, causing the build to use stale version numbers.
 
 ### Misconception #2: "Workflow will fail without config"
 
@@ -206,11 +217,11 @@ When PR is merged to main:
 
 **Reality:** We intentionally set `changelog: false` because we maintain changelogs manually for better quality and context.
 
-### Misconception #4: "Version variable needed"
+### Misconception #4: "Version variables are optional"
 
-**Agent says:** "Add version_variable to auto-update __version__"
+**Agent says:** "Version variables aren't needed since we have commit: false"
 
-**Reality:** Version is read from the file but NOT written back. Tags are the source of truth.
+**Reality:** Version variables ARE REQUIRED! They tell semantic-release to update `__version__` in-memory before building. Without them, the build uses the old version from disk, causing duplicate version uploads to PyPI. With `commit: false`, the update happens only in the working tree and isn't committed back to git.
 
 ### Misconception #5: "Multiple files better"
 
