@@ -110,7 +110,7 @@ def main():
     # Update docs/conf.py version
     update_docs_version(new_version)
 
-    # Output for GitHub Actions
+    # For logging/debugging only: this print is not captured as a GitHub Actions output.
     print(f"VERSION={new_version}")
     print(f"Updated version in {init_file}")
 
