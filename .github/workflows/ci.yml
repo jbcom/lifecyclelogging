@@ -169,7 +169,7 @@ jobs:
           changelog: false
       - name: Publish to GitHub Releases
         if: steps.release.outputs.released == 'true'
-        uses: python-semantic-release/publish-action@v9.17.0
+        uses: python-semantic-release/publish-action@v10.5.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.release.outputs.tag }}
