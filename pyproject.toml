@@ -165,4 +165,3 @@ warn_return_any = false
 [[tool.mypy.overrides]]
 module = "tests.*"
 ignore_errors = true
-
