@@ -19,7 +19,7 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
     """
     # Convert to Path object to separate directory from filename
     original_path = Path(log_file_name)
-    
+
     # Sanitize only the filename part (not the directory path)
     filename = original_path.name
     sanitized_name = re.sub(r"[^0-9a-zA-Z.]+", "_", filename.rstrip(".log"))
