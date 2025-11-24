@@ -31,12 +31,18 @@ def find_init_file():
     # Find all __init__.py files in src/
     for init_file in src.rglob("__init__.py"):
         content = init_file.read_text()
-        # Check if file has an actual __version__ assignment line
-        # Use same regex pattern as replacement logic to avoid false positives
-        for line in content.splitlines():
-            if version_pattern.match(line):
-                return init_file
+    # Find all __init__.py files in src/ that contain __version__
+    found_files = [
+        f for f in src.rglob("__init__.py") if "__version__" in f.read_text()
+    ]
 
+    if not found_files:
+        raise FileNotFoundError("No __init__.py with __version__ found in src/")
+    if len(found_files) > 1:
+        raise FileNotFoundError(
+            f"Multiple __init__.py files with __version__ found: {found_files}"
+        )
+    return found_files[0]
     raise FileNotFoundError("No __init__.py with __version__ found in src/")
 
 
