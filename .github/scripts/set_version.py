@@ -25,9 +25,6 @@ def find_init_file():
     if not src.exists():
         raise FileNotFoundError("src/ directory not found")
 
-    # Regex pattern to match __version__ assignment
-    version_pattern = re.compile(r'^\s*__version__\s*=\s*(["\']).*?\1')
-
     found_files = [
         f for f in src.rglob("__init__.py") if "__version__" in f.read_text()
     ]
@@ -35,9 +32,8 @@ def find_init_file():
     if not found_files:
         raise FileNotFoundError("No __init__.py with __version__ found in src/")
     if len(found_files) > 1:
-        raise FileNotFoundError(
-            f"Multiple __init__.py files with __version__ found: {found_files}"
-        )
+        msg = f"Multiple __init__.py files with __version__ found: {found_files}"
+        raise FileNotFoundError(msg)
     return found_files[0]
 
 
@@ -104,7 +100,8 @@ def main():
             break
 
     if not updated:
-        raise ValueError(f"Failed to update __version__ in {init_file}")
+        msg = f"Failed to update __version__ in {init_file}"
+        raise ValueError(msg)
 
     init_file.write_text("".join(lines))
     print(f"Generated version: {new_version}")
