@@ -26,7 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "rich>=13.0.0",
-    "extended-data-types>=5.2.0",
+    "extended-data-types>=2025.11.164",
     "typing-extensions>=4.0.0; python_version < '3.10'",
 ]
 
@@ -165,12 +165,3 @@ warn_return_any = false
 [[tool.mypy.overrides]]
 module = "tests.*"
 ignore_errors = true
-
-[tool.semantic_release]
-branch = "main"
-allow_zero_version = false
-version_variables = [
-    "src/lifecyclelogging/__init__.py:__version__",
-]
-build_command = "python -m build"
-upload_to_vcs_release = true

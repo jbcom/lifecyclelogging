@@ -3,7 +3,7 @@ import os
 project = "LifecycleLogging"
 author = "Jon Bogaty"
 copyright_notice = f"2025, {author}"
-version = "0.1.3"
+version = "2025.11.0"
 
 extensions = [
     "autodoc2",
