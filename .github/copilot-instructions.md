@@ -30,7 +30,6 @@ from extended_data_types import (
     get_unique_signature,
     make_raw_data_export_safe,
     strtobool,
-    strtoint,
     strtopath,
 )
 
