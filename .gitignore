@@ -30,6 +30,7 @@ ENV/
 .vscode/
 *.swp
 *.swo
+.DS_Store
 
 # Testing
 .nox/

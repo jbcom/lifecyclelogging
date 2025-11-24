@@ -8,7 +8,7 @@ from collections.abc import Mapping, Sequence
 from copy import copy, deepcopy
 from typing import Any
 
-from extended_data_types import wrap_raw_data_for_export
+from extended_data_types import make_raw_data_export_safe, wrap_raw_data_for_export
 
 from .const import DEFAULT_LOG_LEVEL
 
@@ -74,7 +74,11 @@ def clear_existing_handlers(logger: logging.Logger) -> None:
 
 
 def sanitize_json_data(data: Any) -> Any:
-    """Sanitize data for JSON serialization.
+    """Sanitize data for JSON serialization using extended-data-types utilities.
+
+    This function leverages `make_raw_data_export_safe` from extended-data-types
+    to recursively convert complex types to export-safe primitives, including
+    datetime objects, Path objects, and handling of large numbers.
 
     Args:
         data: The data to sanitize.
@@ -82,23 +86,9 @@ def sanitize_json_data(data: Any) -> Any:
     Returns:
         Any: The sanitized data suitable for JSON serialization.
     """
-
-    def _sanitize_number(num: float) -> int | float | str:
-        try:
-            num_abs = abs(num)
-            return str(num) if num_abs > 2**53 else num
-        except OverflowError:
-            return str(num)
-
-    if isinstance(data, (bool, str, type(None))):
-        return data
-    if isinstance(data, (int, float)):
-        return _sanitize_number(data)
-    if isinstance(data, dict):
-        return {str(k): sanitize_json_data(v) for k, v in data.items()}
-    if isinstance(data, (list, tuple)):
-        return [sanitize_json_data(v) for v in data]
-    return str(data)
+    # Use extended-data-types' make_raw_data_export_safe for comprehensive handling
+    # This handles datetime, Path, large numbers, and more
+    return make_raw_data_export_safe(data, export_to_yaml=False)
 
 
 def add_labeled_json(

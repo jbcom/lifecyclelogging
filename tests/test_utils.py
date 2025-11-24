@@ -68,16 +68,18 @@ def test_clear_existing_handlers() -> None:
     ("input_data", "expected"),
     [
         (123, 123),
-        (2**60, str(2**60)),  # Large int becomes string
+        (2**60, 2**60),  # Large ints are preserved (valid in YAML/Python)
         ({"key": 123}, {"key": 123}),
-        ({"key": 2**60}, {"key": str(2**60)}),
-        ([1, 2**60, "test"], [1, str(2**60), "test"]),
-        (complex(1, 2), str(complex(1, 2))),  # Non-JSON type becomes string
+        ({"key": 2**60}, {"key": 2**60}),
+        ([1, 2**60, "test"], [1, 2**60, "test"]),
+        (complex(1, 2), complex(1, 2)),  # Complex numbers preserved
     ],
 )
 def test_sanitize_json_data(input_data: Any, expected: Any) -> None:
     """Test JSON data sanitization utility function.
 
-    This test verifies that data is correctly sanitized for JSON serialization.
+    This test verifies that data is correctly sanitized for export.
+    Note: make_raw_data_export_safe preserves Python types that are valid
+    in YAML (like large ints and complex numbers) rather than stringifying them.
     """
     assert sanitize_json_data(input_data) == expected

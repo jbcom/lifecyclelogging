@@ -26,7 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "rich>=13.0.0",
-    "extended-data-types>=5.0.0",
+    "extended-data-types>=5.2.0",
     "typing-extensions>=4.0.0; python_version < '3.10'",
 ]
 
@@ -166,11 +166,5 @@ warn_return_any = false
 module = "tests.*"
 ignore_errors = true
 
-[tool.semantic_release]
-branch = "main"
-allow_zero_version = true
-major_on_zero = false
-version_variables = [
-    "src/lifecyclelogging/__init__.py:__version__",
-    "docs/conf.py:version",
-]
+# Semantic release configuration is managed in .github/workflows/ci.yml
+# DO NOT add [tool.semantic_release] here - it conflicts with the workflow-based approach
