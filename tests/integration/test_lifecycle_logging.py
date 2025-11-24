@@ -61,10 +61,12 @@ def test_full_logging_lifecycle(temp_logger: Logging, tmp_path: Path) -> None:
     assert storage_result is not None
     assert storage_msg in temp_logger.stored_messages[storage_marker]
 
-    # Verify file output
+    # Verify file output exists at the location specified in fixture
     log_path = tmp_path / "test_app.log"
-    temp_logger.logger.handlers[0].baseFilename = str(log_path)
-    assert log_path.exists()
+    # Flush the file handler to ensure data is written
+    for handler in temp_logger.logger.handlers:
+        handler.flush()
+    assert log_path.exists(), f"Log file should exist at {log_path}"
 
 
 def test_verbosity_integration(temp_logger: Logging) -> None:

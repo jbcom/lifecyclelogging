@@ -17,8 +17,12 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
         logger (logging.Logger): The logger to which the file handler will be added.
         log_file_name (str): The name of the log file.
     """
-    # Sanitize the file name
-    sanitized_name = re.sub(r"[^0-9a-zA-Z]+", "_", log_file_name.rstrip(".log"))
+    # Convert to Path object to separate directory from filename
+    original_path = Path(log_file_name)
+    
+    # Sanitize only the filename part (not the directory path)
+    filename = original_path.name
+    sanitized_name = re.sub(r"[^0-9a-zA-Z.]+", "_", filename.rstrip(".log"))
     if not sanitized_name[:1].isalnum():
         first_alpha = re.search(r"[A-Za-z0-9]", sanitized_name)
         if not first_alpha:
@@ -30,8 +34,8 @@ def add_file_handler(logger: logging.Logger, log_file_name: str) -> None:
     if not sanitized_name.endswith(".log"):
         sanitized_name += ".log"
 
-    # Create path object
-    log_file_path = Path(sanitized_name).resolve()
+    # Reconstruct the full path with sanitized filename
+    log_file_path = (original_path.parent / sanitized_name).resolve()
 
     # Ensure the directory exists
     log_file_path.parent.mkdir(parents=True, exist_ok=True)
