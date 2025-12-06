@@ -42,10 +42,10 @@ from extended_data_types import (
     wrap_raw_data_for_export,
 )
 
-from src.lifecyclelogging.const import VERBOSITY
-from src.lifecyclelogging.handlers import add_console_handler, add_file_handler
-from src.lifecyclelogging.log_types import LogLevel
-from src.lifecyclelogging.utils import add_json_data, clear_existing_handlers, find_logger, get_log_level
+from lifecyclelogging.const import VERBOSITY
+from lifecyclelogging.handlers import add_console_handler, add_file_handler
+from lifecyclelogging.log_types import LogLevel
+from lifecyclelogging.utils import add_json_data, clear_existing_handlers, find_logger, get_log_level
 
 
 # Type alias for key transformation functions

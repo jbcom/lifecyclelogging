@@ -8,7 +8,7 @@ from __future__ import annotations
 
 __version__ = "202511.8.0"
 
-from src.lifecyclelogging.logging import ExitRunError, KeyTransform, Logging
+from lifecyclelogging.logging import ExitRunError, KeyTransform, Logging
 
 
 __all__ = ["ExitRunError", "KeyTransform", "Logging"]
