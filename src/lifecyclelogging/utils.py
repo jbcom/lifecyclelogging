@@ -10,7 +10,7 @@ from typing import Any
 
 from extended_data_types import make_raw_data_export_safe, wrap_raw_data_for_export
 
-from .const import DEFAULT_LOG_LEVEL
+from src.lifecyclelogging.const import DEFAULT_LOG_LEVEL
 
 
 def get_log_level(level: int | str) -> int:

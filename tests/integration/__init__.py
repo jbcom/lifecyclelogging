@@ -3,3 +3,5 @@
 This module contains tests that verify the integration of different components
 within the lifecyclelogging package.
 """
+
+from __future__ import annotations
