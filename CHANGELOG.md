@@ -2,6 +2,81 @@
 
 <!-- version list -->
 
+## v0.2.0 (2025-12-07)
+
+### Bug Fixes
+
+- Properly sanitize only filename, not directory path
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+- Resolve CI failures from linting and test issues
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+- Use absolute imports and fix lint issues
+  ([#46](https://github.com/jbcom/lifecyclelogging/pull/46),
+  [`3ce738d`](https://github.com/jbcom/lifecyclelogging/commit/3ce738d0ecb133c8ed52283209cc25aced10e2c4))
+
+### Chores
+
+- Remove .DS_Store files and add to .gitignore
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+- **config**: Migrate config renovate.json
+  ([#27](https://github.com/jbcom/lifecyclelogging/pull/27),
+  [`14618ed`](https://github.com/jbcom/lifecyclelogging/commit/14618edcc060b17fcdb91b5deb6c8a8b901309e9))
+
+- **deps**: Update actions/checkout action to v6
+  ([#31](https://github.com/jbcom/lifecyclelogging/pull/31),
+  [`9e497d6`](https://github.com/jbcom/lifecyclelogging/commit/9e497d62b7ceb795df2314e75c3cca026676be9a))
+
+- **deps**: Update actions/checkout action to v6
+  ([#25](https://github.com/jbcom/lifecyclelogging/pull/25),
+  [`d837604`](https://github.com/jbcom/lifecyclelogging/commit/d8376047f1382f7365b142dbdf972e1ddb83d7c4))
+
+- **deps**: Update actions/checkout action to v6
+  ([#26](https://github.com/jbcom/lifecyclelogging/pull/26),
+  [`e11bddd`](https://github.com/jbcom/lifecyclelogging/commit/e11bdddfa73e78ba8cb43cbd2f405269750e559f))
+
+- **deps**: Update actions/checkout to v6 ([#25](https://github.com/jbcom/lifecyclelogging/pull/25),
+  [`d837604`](https://github.com/jbcom/lifecyclelogging/commit/d8376047f1382f7365b142dbdf972e1ddb83d7c4))
+
+- **deps**: Update actions/download-artifact action to v6
+  ([#32](https://github.com/jbcom/lifecyclelogging/pull/32),
+  [`07246e3`](https://github.com/jbcom/lifecyclelogging/commit/07246e3e2c6fbb4415e358ae1997a6d7044cafa8))
+
+### Code Style
+
+- Format handlers.py with black ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+### Documentation
+
+- Add AI agent guidelines and fix workflow conflicts
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+### Features
+
+- Leverage extended-data-types 5.2.0 for improved data handling
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+- Migrate from monorepo to standalone package
+  ([`92645c9`](https://github.com/jbcom/lifecyclelogging/commit/92645c93d84c4169c853e0f0bf5fe8fddc564cac))
+
+- Upgrade to extended-data-types 5.2.0 and unified CI workflow
+  ([#28](https://github.com/jbcom/lifecyclelogging/pull/28),
+  [`0707a30`](https://github.com/jbcom/lifecyclelogging/commit/0707a30f528578adda7c562c7a9aa926464110ac))
+
+### Refactoring
+
+- Use absolute imports and add future annotations
+  ([`e413f71`](https://github.com/jbcom/lifecyclelogging/commit/e413f7190dd97adc24eda75f4634d414d863791b))
+
+
 ## v202511.8.0 (2025-12-01)
 
 ### Documentation
