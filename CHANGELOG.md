@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.2.1 (2025-12-07)
+
+### Bug Fixes
+
+- Restore working Dockerfile with Go 1.25.3 and correct process-compose install
+  ([`eef6fda`](https://github.com/jbcom/lifecyclelogging/commit/eef6fdaadd8f5ec7073b05d53933a511ee4fbb02))
+
+
 ## v0.2.0 (2025-12-07)
 
 ### Bug Fixes
